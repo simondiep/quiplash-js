@@ -54,10 +54,13 @@ h2 {
   padding-right: 20px;
 }
 
-.player-button:hover {
-  background-color: darkgreen;
-  border: 1px solid gray;
-  color: white;
+/** Only apply hover effects to non-mobile devices */
+@media (hover: hover) {
+  .player-button:hover {
+    background-color: darkgreen;
+    border: 1px solid gray;
+    color: white;
+  }
 }
 
 .submit-form-button {

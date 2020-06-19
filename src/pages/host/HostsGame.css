@@ -21,7 +21,6 @@
   align-items: center;
   padding: 30px;
   color: #000;
-  text-transform: uppercase;
   backface-visibility: hidden;
   box-shadow: 0 10px 30px -3px rgba(0, 0, 0, 0.1);
   border-radius: 15px;

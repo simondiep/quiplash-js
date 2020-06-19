@@ -10,9 +10,14 @@ const unusedPromptsForRoom = {};
 
 export function getOnePromptAndAnswersForRoom(roomCode) {
   const prompt = unusedPromptsForRoom[roomCode].pop();
+  const submitters = [];
+  Object.values(promptsForRoom[roomCode][prompt]).forEach((answerProps) => {
+    submitters.push(answerProps.submitter);
+  });
   return {
-    prompt,
     answers: Object.keys(promptsForRoom[roomCode][prompt]),
+    prompt,
+    submitters,
   };
 }
 

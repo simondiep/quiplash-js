@@ -25,7 +25,7 @@ Playable in the same room or remotely via screensharing.
 ## How to Start Local Server
 
 - Build your React app
-- `npm run build-react`
+- `npm run build`
 - Start your server
 - `npm start`
 
@@ -76,20 +76,25 @@ Note: Remember to build your web code. The webpack-dev-server content does not g
 - Test on phone
 - Mobile safari doesn't use 100% height, causing screen to be scrolled down after clicking join
 - Mobile safari scrolls down too far when inputting an answer, making you unable to see the prompt
+- Easier way for mobile safari to join a new game since URL is at /game/1234
+- BLANK in prompts are not being rendered with dangerouslySetInnerHtml
+- Mobile safari - Button stays green after submitting prompt answer
+- prevent answer submitter from voting on their own prompt
+- Handle players dropping out
+- Explain that scores carry over between games
 
 ### Not yet started
 
-- Easier way for mobile safari to join a new game since URL is at /game/1234
-- Mobile style fixes
-  - Button stays green after submitting prompt answer
+- Points are confusing
+  - need to display points after votes are in
+  - Display single game scores compared to total scores
+- Mobile safari scrolls down too far when inputting an answer, making you unable to see the prompt
 - Tablet support for host (cards too wide)
 - handle duplicates/collisions in same answer
 - Display your player name on top of screen (player)
   - Maybe merge JoinGame and StartGame components or have a parent component to keep track of player name?
 - Have first player to join have host controls to start game
-- prevent answer submitter from voting on their own prompt
 - Time out inactive lobbies
-- Handle players dropping out (automatic?)
 - Testing faster - Automate creation of room and joining of a player
 - Polish to make it look better
   - Sound effects
@@ -100,3 +105,4 @@ Note: Remember to build your web code. The webpack-dev-server content does not g
 - keep track of used prompts so they don't repeat
 - allow voting for creative answers
 - consider converting REST endpoint into websocket call
+- better instructions for those that haven't played before

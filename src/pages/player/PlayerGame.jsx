@@ -9,7 +9,7 @@ class PlayerGame extends Component {
   //   phase: "STARTED",
   //   promptsToAnswer: [
   //     "The most <i>horrific</i> way to start your day",
-  //     "You are having a stroll in the park, only to see <BLANK>",
+  //     "You are having a stroll in the park, only to see BLANK",
   //   ],
   //   currentPromptNumber: 0,
   // };
@@ -29,6 +29,10 @@ class PlayerGame extends Component {
       this.props.history.push("/");
       return;
     }
+    socket.on("PLAYER_DISCONNECTED", (playerName) => {
+      alert(`${playerName} has disconnected from the game.  Please join a new game to keep playing.`);
+      this.props.history.push("/");
+    });
     socket.on("START_GAME", (promptsToAnswer) =>
       this.setState({ phase: "STARTED", promptsToAnswer, currentPromptNumber: 0 }),
     );
@@ -39,6 +43,7 @@ class PlayerGame extends Component {
         votingOptions: onePromptAndAnswers.answers,
       }),
     );
+    socket.on("WAIT_FOR_VOTES_ON_YOUR_PROMPT", () => this.setState({ phase: "WAIT_FOR_VOTES_ON_YOUR_PROMPT" }));
   }
 
   handleSubmitAnswerClick(e) {
@@ -103,7 +108,9 @@ class PlayerGame extends Component {
       case "WAITING_TO_START":
         return <h1>Waiting for game to start...</h1>;
       case "WAITING_FOR_NEXT_ROUND":
-        return <h1>See the results on screen</h1>;
+        return <h1>See the results on the host screen</h1>;
+      case "WAIT_FOR_VOTES_ON_YOUR_PROMPT":
+        return <h1>See others vote for your answer on the host screen</h1>;
       default:
         throw new Error("Invalid Player State ", this.state.phase);
     }

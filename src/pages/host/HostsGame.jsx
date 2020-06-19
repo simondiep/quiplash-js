@@ -38,6 +38,10 @@ class HostsGame extends Component {
       this.props.history.push("/create");
       return;
     }
+    socket.on("PLAYER_DISCONNECTED", (playerName) => {
+      alert(`${playerName} has disconnected from the game.  Please create a new game to keep playing.`);
+      this.props.history.push("/create");
+    });
     socket.on("START_GAME", () => this.setState({ phase: "SHOW_INSTRUCTIONS" }));
     socket.on("START_VOTING_PHASE", (onePromptAndAnswers) =>
       this.setState({
@@ -46,7 +50,9 @@ class HostsGame extends Component {
         votingOptions: onePromptAndAnswers.answers,
       }),
     );
-    socket.on("VOTING_RESULTS", (votingResults) => this.setState({ phase: "VOTING_RESULTS_PHASE", votingResults }));
+    socket.on("VOTING_RESULTS", (votingResults, hasMoreRounds) =>
+      this.setState({ phase: "VOTING_RESULTS_PHASE", hasMoreRounds, votingResults }),
+    );
     socket.on("SHOW_PLAYER_POINTS", (playersAndPoints) =>
       this.setState({ phase: "SHOW_PLAYER_POINTS", playersAndPoints }),
     );
@@ -73,6 +79,7 @@ class HostsGame extends Component {
                 <h2>{`${playerAndPoints[0]} : ${playerAndPoints[1]}`}</h2>
               ))}
             </div>
+            <div>Note: Scores carry over to the next game.</div>
             <button className="submit-form-button start-new-round-button" onClick={this.onStartNewGameClick}>
               Start New Game
             </button>
@@ -136,7 +143,7 @@ class HostsGame extends Component {
               })}
             </div>
             <button className="submit-form-button start-new-round-button" onClick={this.onStartNewRoundClick}>
-              Start Next Round
+              {this.state.hasMoreRounds ? "Start Next Round" : "View Scores"}
             </button>
           </div>
         );
