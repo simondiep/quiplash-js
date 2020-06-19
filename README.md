@@ -24,12 +24,9 @@ Playable in the same room or remotely via screensharing.
 
 ## How to Start Local Server
 
-- Build your React app
-- `npm run build`
-- Start your server
 - `npm start`
 
-Note: Remember to build your web code. The webpack-dev-server content does not get hosted by node.
+Note: The React web app needs to get built, whereas the node server does not.
 
 ## Directory Structure
 
