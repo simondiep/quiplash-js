@@ -1,0 +1,100 @@
+.answers {
+  display: flex;
+  justify-content: center;
+}
+
+.wrapper {
+  padding-right: 50px;
+  position: relative;
+  perspective: 40em;
+  transform-style: preserve-3d;
+}
+
+.card {
+  min-height: 200px;
+  min-width: 400px;
+  max-width: 700px;
+  transform: translateX(10px) rotateY(15deg) rotateX(10deg);
+  background-color: rgba(255, 255, 255, 0.88);
+  display: flex;
+  justify-content: flex-start;
+  align-items: center;
+  padding: 30px;
+  color: #000;
+  text-transform: uppercase;
+  backface-visibility: hidden;
+  box-shadow: 0 10px 30px -3px rgba(0, 0, 0, 0.1);
+  border-radius: 15px;
+}
+
+.card.reversed {
+  transform: translateX(10px) rotateY(-15deg) rotateX(10deg);
+}
+
+.card h1 {
+  font-size: 50px;
+  font-weight: 900;
+}
+
+.player-scores {
+  background-color: rgba(0, 0, 0, 0.5);
+  max-width: 500px;
+  margin: auto;
+  border-radius: 25px;
+  padding: 20px;
+}
+
+.prompt {
+  font-size: 80px;
+  font-weight: 700;
+  padding-bottom: 50px;
+}
+
+.submitter {
+  color: whitesmoke;
+}
+
+.start-new-round-button {
+  margin-top: 100px;
+}
+
+.voters {
+  font-size: 40px;
+  font-weight: 700;
+  margin-top: 50px;
+}
+
+.losing-answer {
+  border: 10px solid red;
+  background-color: rgba(255, 196, 181, 0.88);
+}
+
+.winning-answer {
+  background-color: white;
+  border: 10px solid greenyellow;
+}
+
+.quiplash-text {
+  top: 0;
+  right: 0;
+  position: absolute;
+  padding: 10px;
+  font-weight: 700;
+  color: green;
+}
+
+.winning-quiplash {
+  animation: quiplash-border 0.5s linear alternate infinite;
+}
+
+@keyframes quiplash-border {
+  0% {
+    border: 10px solid greenyellow;
+  }
+  50% {
+    border: 10px solid rgb(193, 255, 100);
+  }
+  100% {
+    border: 10px solid rgb(221, 255, 170);
+  }
+}

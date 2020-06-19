@@ -1,0 +1,25 @@
+.connected-players {
+  font-size: 30px;
+  font-weight: 700;
+  margin: 30px;
+}
+
+.lobby-room-code-text {
+  color: gray;
+  display: inline-block;
+  font-size: 60px;
+  font-weight: 700;
+  user-select: none;
+}
+
+.lobby-room-instructions {
+  padding: 20px;
+}
+
+.room-code {
+  color: lightgreen;
+  display: inline-block;
+  font-size: 60px;
+  font-weight: 900;
+  margin-left: 30px;
+}
