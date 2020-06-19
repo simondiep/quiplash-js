@@ -82,7 +82,7 @@ class HostsGame extends Component {
         let answersCount = 0;
         return (
           <div>
-            <div className="prompt" dangerouslySetInnerHTML={{ __html: this.state.prompt }}></div>
+            <h1 className="prompt" dangerouslySetInnerHTML={{ __html: this.state.prompt }}></h1>
             <div className="answers">
               {this.state.votingOptions.map((voteOption) => {
                 let cardClasses = "card";
@@ -105,7 +105,7 @@ class HostsGame extends Component {
         let count = 0;
         return (
           <div>
-            <div className="prompt" dangerouslySetInnerHTML={{ __html: this.state.prompt }}></div>
+            <h1 className="prompt" dangerouslySetInnerHTML={{ __html: this.state.prompt }}></h1>
             <div className="answers">
               {this.state.votingResults.map((voteResult) => {
                 let cardClasses = "card";

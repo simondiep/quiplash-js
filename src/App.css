@@ -38,6 +38,7 @@ h2 {
 .form-input.player {
   font-size: 32px;
   margin: 20px;
+  max-width: 200px;
 }
 
 .form-label {
@@ -90,6 +91,10 @@ h2 {
   h2 {
     font-size: 30px;
   }
+
+  .form-input.player {
+    max-width: 400px;
+  }
 }
 
 @media (min-width: 1024px) {
@@ -99,6 +104,10 @@ h2 {
 
   h2 {
     font-size: 50px;
+  }
+
+  .form-input.player {
+    max-width: unset;
   }
 
   .player-button {

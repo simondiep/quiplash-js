@@ -45,9 +45,8 @@
 }
 
 .prompt {
-  font-size: 80px;
   font-weight: 700;
-  padding-bottom: 50px;
+  padding: 50px;
 }
 
 .submitter {

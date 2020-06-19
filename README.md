@@ -2,11 +2,14 @@
 
 A creative word-smithing party game for 3-8 players. A recreation of the Jackbox game Quiplash, using javascript.
 
+Playable in the same room or remotely via screensharing.
+
 ![demo preview](./preview.png?raw=true)
 
 ## How to Play
 
 - Host starts a new game at https://quiplashjs.herokuapp.com/create
+  - If players are remote, screen share this screen
 - Players join game at https://quiplashjs.herokuapp.com (recommended to use a mobile device)
 - Host starts the game
 - Players receive two prompts to answer (Be as silly as possible)
@@ -64,15 +67,19 @@ Note: Remember to build your web code. The webpack-dev-server content does not g
 - notify of the last round and show final scores (host only)
 - better readme
 - enter key should submit an answer
+- prevent start in lobby until at least 3 players (make a visual cue)
 - code cleanup
 - Host on heroku
   - Prod built artifacts?
   - variablize server (for client io connections) and client (for instructions page) URLS
 - Test on heroku
+- Test on phone
 
 ### Not yet started
 
-- cold-start strategies
+- Mobile style fixes
+  - Button stays green after submitting prompt answer
+- Tablet support for host (cards too wide)
 - handle duplicates/collisions in same answer
 - Display your player name on top of screen (player)
   - Maybe merge JoinGame and StartGame components or have a parent component to keep track of player name?
@@ -81,18 +88,12 @@ Note: Remember to build your web code. The webpack-dev-server content does not g
 - Time out inactive lobbies
 - Handle players dropping out (automatic?)
 - Testing faster - Automate creation of room and joining of a player
-- Clean up console logs
-- Polish to make it look good
+- Polish to make it look better
   - Sound effects
   - background music
   - animations
-- Better instructions
 - host - progress bar for showing who's still submitting their answer
-- consider getting rid of room state and leverage only socket rooms
 - support pg13 / r-rated prompts
 - keep track of used prompts so they don't repeat
 - allow voting for creative answers
 - consider converting REST endpoint into websocket call
-- gray out start button in lobby until at least 3 players (make a visual cue)
-- unit tests? makes sense if im the only dev?
-- Test on phone
