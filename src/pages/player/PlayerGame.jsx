@@ -62,7 +62,7 @@ class PlayerGame extends Component {
         return (
           <form onSubmit={this.handleSubmitAnswerClick}>
             <div>
-              <h1>{this.state.promptsToAnswer[this.state.currentPromptNumber]}</h1>
+              <h1 dangerouslySetInnerHTML={this.state.promptsToAnswer[this.state.currentPromptNumber]}></h1>
               <input
                 className="form-input player"
                 type="text"
@@ -82,7 +82,7 @@ class PlayerGame extends Component {
       case "VOTING":
         return (
           <div>
-            <h1>{this.state.prompt}</h1>
+            <h1 dangerouslySetInnerHTML={this.state.prompt}></h1>
             <h2>Which one do you like more?</h2>
             {this.state.votingOptions.map((voteOption) => (
               <button className="player-button" onClick={() => this.handleSubmitVoteClick(voteOption)}>

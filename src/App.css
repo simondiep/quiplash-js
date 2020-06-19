@@ -3,7 +3,7 @@ body {
 }
 
 h1 {
-  font-size: 80px;
+  font-size: 30px;
   font-weight: 700;
   margin: 0;
   padding-top: 50px;
@@ -75,4 +75,10 @@ h1 {
   background-color: darkgreen;
   border: 1px solid gray;
   color: white;
+}
+
+@media (min-width: 640px) {
+  h1 {
+    font-size: 80px;
+  }
 }

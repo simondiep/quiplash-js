@@ -8,6 +8,11 @@ class Lobby extends Component {
 
   componentDidMount() {
     const socket = initializeHostSocketIoConnection();
+    if (!socket) {
+      // For easier local debugging with live-reload changes
+      this.props.history.push("/create");
+      return;
+    }
     socket.emit("HOST_JOINED_ROOM", this.getRoomCode());
     socket.on("LOBBY_PLAYERS_UPDATED", (lobbyPlayers) => {
       this.setState({ lobbyPlayers });
@@ -43,7 +48,7 @@ class Lobby extends Component {
       <div>
         <h1>Quiplash-JS</h1>
         <div className="lobby-room-instructions">
-          Go to <u>quiplash.herokuapp.com</u> on your mobile device
+          Go to <span className="room-url">quiplashjs.herokuapp.com</span> on your mobile device
         </div>
         <div className="lobby-room-code-text">Room Code</div>
         <div className="room-code">{this.getRoomCode()}</div>
