@@ -5,6 +5,7 @@ import { getHostSocket } from "../../SocketIoConnection";
 
 class HostsGame extends Component {
   state = { phase: "SHOW_INSTRUCTIONS" };
+  // Test state
   // state = {
   //   phase: "VOTING_RESULTS_PHASE",
   //   prompt: "How are you doing today?",
@@ -81,7 +82,7 @@ class HostsGame extends Component {
         let answersCount = 0;
         return (
           <div>
-            <div className="prompt" dangerouslySetInnerHTML={this.state.prompt}></div>
+            <div className="prompt" dangerouslySetInnerHTML={{ __html: this.state.prompt }}></div>
             <div className="answers">
               {this.state.votingOptions.map((voteOption) => {
                 let cardClasses = "card";
@@ -104,7 +105,7 @@ class HostsGame extends Component {
         let count = 0;
         return (
           <div>
-            <div className="prompt" dangerouslySetInnerHTML={this.state.prompt}></div>
+            <div className="prompt" dangerouslySetInnerHTML={{ __html: this.state.prompt }}></div>
             <div className="answers">
               {this.state.votingResults.map((voteResult) => {
                 let cardClasses = "card";

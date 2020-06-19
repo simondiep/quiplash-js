@@ -10,6 +10,11 @@ h1 {
   padding-bottom: 50px;
 }
 
+h2 {
+  font-size: 20px;
+  margin: 0;
+}
+
 .centered-text {
   text-align: center;
 }
@@ -47,7 +52,7 @@ h1 {
   border: 1px solid gray;
   border-radius: 5px;
   font-size: 40px;
-  margin: 40px;
+  margin: 20px;
   min-height: 70px;
   min-width: 220px;
   padding-left: 20px;
@@ -79,6 +84,24 @@ h1 {
 
 @media (min-width: 640px) {
   h1 {
+    font-size: 40px;
+  }
+
+  h2 {
+    font-size: 30px;
+  }
+}
+
+@media (min-width: 1024px) {
+  h1 {
     font-size: 80px;
+  }
+
+  h2 {
+    font-size: 50px;
+  }
+
+  .player-button {
+    margin: 40px;
   }
 }

@@ -65,13 +65,13 @@ Note: Remember to build your web code. The webpack-dev-server content does not g
 - better readme
 - enter key should submit an answer
 - code cleanup
-
-### Not yet started
-
 - Host on heroku
   - Prod built artifacts?
   - variablize server (for client io connections) and client (for instructions page) URLS
 - Test on heroku
+
+### Not yet started
+
 - cold-start strategies
 - handle duplicates/collisions in same answer
 - Display your player name on top of screen (player)

@@ -4,6 +4,15 @@ import { getPlayerSocket } from "../../SocketIoConnection";
 
 class PlayerGame extends Component {
   state = { phase: "WAITING_TO_START", answer: "" };
+  // Test state
+  // state = {
+  //   phase: "STARTED",
+  //   promptsToAnswer: [
+  //     "The most <i>horrific</i> way to start your day",
+  //     "You are having a stroll in the park, only to see <BLANK>",
+  //   ],
+  //   currentPromptNumber: 0,
+  // };
 
   constructor(props) {
     super(props);
@@ -62,7 +71,7 @@ class PlayerGame extends Component {
         return (
           <form onSubmit={this.handleSubmitAnswerClick}>
             <div>
-              <h1 dangerouslySetInnerHTML={this.state.promptsToAnswer[this.state.currentPromptNumber]}></h1>
+              <h1 dangerouslySetInnerHTML={{ __html: this.state.promptsToAnswer[this.state.currentPromptNumber] }}></h1>
               <input
                 className="form-input player"
                 type="text"
@@ -82,7 +91,7 @@ class PlayerGame extends Component {
       case "VOTING":
         return (
           <div>
-            <h1 dangerouslySetInnerHTML={this.state.prompt}></h1>
+            <h1 dangerouslySetInnerHTML={{ __html: this.state.prompt }}></h1>
             <h2>Which one do you like more?</h2>
             {this.state.votingOptions.map((voteOption) => (
               <button className="player-button" onClick={() => this.handleSubmitVoteClick(voteOption)}>
