@@ -74,9 +74,12 @@ Note: Remember to build your web code. The webpack-dev-server content does not g
   - variablize server (for client io connections) and client (for instructions page) URLS
 - Test on heroku
 - Test on phone
+- Mobile safari doesn't use 100% height, causing screen to be scrolled down after clicking join
+- Mobile safari scrolls down too far when inputting an answer, making you unable to see the prompt
 
 ### Not yet started
 
+- Easier way for mobile safari to join a new game since URL is at /game/1234
 - Mobile style fixes
   - Button stays green after submitting prompt answer
 - Tablet support for host (cards too wide)

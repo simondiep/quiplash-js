@@ -8,10 +8,19 @@ import JoinGame from "./pages/player/JoinGame";
 import Lobby from "./pages/host/Lobby";
 
 class App extends Component {
+  // Mobile (IOS Safari) support for 100vh so there's no scrolling
+  componentDidMount() {
+    window.height = window.innerHeight;
+
+    window.addEventListener("resize", () => {
+      window.height = window.innerHeight;
+    });
+  }
+
   render() {
     return (
       <Router>
-        <div className="centered-text colorful-background">
+        <div>
           <div style={{ position: "absolute", top: 0, left: 0, opacity: 0 }}>
             <Link to="/create">HOST</Link>
             <br />
