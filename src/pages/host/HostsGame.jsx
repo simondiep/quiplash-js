@@ -61,10 +61,23 @@ class HostsGame extends Component {
     });
     socket.on("VOTING_RESULTS", (votingResults, hasMoreRounds) => {
       this.setState({ phase: "VOTING_RESULTS_PHASE", hasMoreRounds, votingResults });
+      for (let votingResult of votingResults) {
+        if (votingResult.state === "WINNER") {
+          if (votingResult.quiplash) {
+            speakText("Quiplash for " + votingResult.answer);
+            break;
+          } else {
+            speakText("The winner is " + votingResult.answer);
+            break;
+          }
+        } else if (votingResult.state === "TIE") {
+          speakText("Tie vote");
+          break;
+        }
+      }
     });
     socket.on("SHOW_PLAYER_POINTS", (playersAndPoints) => {
       this.setState({ phase: "SHOW_PLAYER_POINTS", playersAndPoints });
-      speakText(`Here are the final scores.  ${playersAndPoints} is the winner!`);
     });
     playBackgroundMusic();
   }
@@ -136,9 +149,6 @@ class HostsGame extends Component {
                   cardClasses += " winning-answer";
                   if (voteResult.quiplash) {
                     cardClasses += " winning-quiplash";
-                    speakText("Quiplash for " + voteResult.answer);
-                  } else {
-                    speakText("The winner is " + voteResult.answer);
                   }
                 } else if (voteResult.state === "LOSER") {
                   cardClasses += " losing-answer";
