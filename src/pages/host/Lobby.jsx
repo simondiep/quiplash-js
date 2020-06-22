@@ -5,6 +5,16 @@ import "./Lobby.css";
 
 class Lobby extends Component {
   state = { lobbyPlayers: [] };
+  // Test state
+  // state = {
+  //   lobbyPlayers: [
+  //     { id: "simon", name: "simon" },
+  //     { id: "simon", name: "al" },
+  //     { id: "simon", name: "simon redux" },
+  //     { id: "simon", name: "popo" },
+  //     { id: "simon", name: "v" },
+  //   ],
+  // };
 
   componentDidMount() {
     const socket = initializeHostSocketIoConnection();
@@ -20,10 +30,21 @@ class Lobby extends Component {
   }
 
   getConnectedPlayersComponent() {
-    if (this.state.lobbyPlayers.length === 0) {
-      return <div>No connected players yet.</div>;
+    let connectedPlayersComponent = [];
+    for (let i = 0; i < 8; i++) {
+      let classNames = "connected-player";
+      let lobbyPlayer = this.state.lobbyPlayers[i];
+      if (!lobbyPlayer) {
+        classNames += " empty-player-slot";
+        lobbyPlayer = { id: i, name: "Join Game!" };
+      }
+      connectedPlayersComponent.push(
+        <div className={classNames} key={lobbyPlayer.id}>
+          {lobbyPlayer.name}
+        </div>,
+      );
     }
-    return this.state.lobbyPlayers.map((lobbyPlayer) => <div key={lobbyPlayer.id}>{lobbyPlayer.name}</div>);
+    return connectedPlayersComponent;
   }
 
   getRoomCode() {
@@ -45,17 +66,23 @@ class Lobby extends Component {
 
   render() {
     return (
-      <div>
-        <div className="lobby-room-instructions">
-          Go to <span className="room-url">quiplashjs.herokuapp.com</span> on your mobile device
-        </div>
-        <div className="lobby-room-code-text">Room Code</div>
-        <div className="room-code">{this.getRoomCode()}</div>
-        <div className="connected-players">{this.getConnectedPlayersComponent()}</div>
-        <button className="submit-form-button" onClick={this.onStartGameClick.bind(this)}>
-          Start Game
-        </button>
-      </div>
+      <table>
+        <tr>
+          <td className="instructions-cell">
+            <div className="lobby-room-instructions">
+              Go to <span className="room-url">quiplashjs.herokuapp.com</span> on your mobile device
+            </div>
+            <div className="lobby-room-code-text">Room Code</div>
+            <div className="room-code">{this.getRoomCode()}</div>
+            <button className="submit-form-button start-game-button" onClick={this.onStartGameClick.bind(this)}>
+              Start Game
+            </button>
+          </td>
+          <td className="players-cell">
+            <div className="connected-players">{this.getConnectedPlayersComponent()}</div>
+          </td>
+        </tr>
+      </table>
     );
   }
 }
