@@ -110,7 +110,10 @@ export function assignPromptsForPlayers({ players, roomCode }) {
   // Total number of prompts is equal to the number of players
   const prompts = [];
   for (let i = 0; i < players.length; i++) {
-    const prompt = getRandomPG13Prompt();
+    let prompt;
+    do {
+      prompt = getRandomPG13Prompt();
+    } while (prompts.includes(prompt));
     prompts.push(prompt);
     promptsForRoom[roomCode][prompt] = {};
     unusedPromptsForRoom[roomCode].push(prompt);

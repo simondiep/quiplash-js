@@ -86,6 +86,7 @@ Note: The React web app needs to get built, whereas the node server does not.
   - need to display points after votes are in
   - use 100 instead of 1 to more intuitively show points
 - handle duplicate player names
+- prevent duplicate prompts in same game
 
 ### Not yet started
 

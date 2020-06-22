@@ -24,7 +24,9 @@ class JoinGame extends React.Component {
       socket.emit("PLAYER_JOIN", { roomCode: this.state.roomCode.toUpperCase(), playerName: this.state.playerName });
     }
     socket.on("FAILED_TO_JOIN_ROOM", () =>
-      this.setState({ errorMessage: `Failed to join room ${this.state.roomCode.toUpperCase()} as it does not exist.` }),
+      this.setState({
+        errorMessage: `Failed to join room ${this.state.roomCode.toUpperCase()} as it does not exist or is full.`,
+      }),
     );
     socket.on("SUCCESSFULLY_JOINED_ROOM", () => this.props.history.push(`/game/${this.state.roomCode}`));
   }
