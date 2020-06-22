@@ -79,15 +79,18 @@ Note: The React web app needs to get built, whereas the node server does not.
 - prevent answer submitter from voting on their own prompt
 - Handle players dropping out
 - Explain that scores carry over between games
+- clean up abandonded rooms
+- room code - use letters instead of numbers
+- handle duplicates/collisions in same answer
 
 ### Not yet started
 
 - Points are confusing
   - need to display points after votes are in
   - Display single game scores compared to total scores
+  - use 100 instead of 1 to more intuitively show points
 - Mobile safari scrolls down too far when inputting an answer, making you unable to see the prompt
 - Tablet support for host (cards too wide)
-- handle duplicates/collisions in same answer
 - Display your player name on top of screen (player)
   - Maybe merge JoinGame and StartGame components or have a parent component to keep track of player name?
 - Have first player to join have host controls to start game
@@ -95,11 +98,12 @@ Note: The React web app needs to get built, whereas the node server does not.
 - Testing faster - Automate creation of room and joining of a player
 - Polish to make it look better
   - Sound effects
-  - background music
+  - background music (only on host)
   - animations
 - host - progress bar for showing who's still submitting their answer
 - support pg13 / r-rated prompts
 - keep track of used prompts so they don't repeat
-- allow voting for creative answers
+- allow side-voting for creative answers
 - consider converting REST endpoint into websocket call
 - better instructions for those that haven't played before
+- On score screen, recap the most voted answer and prompt

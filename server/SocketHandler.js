@@ -1,6 +1,13 @@
-import { addPlayerToRoom, addPoints, getPlayersOfRoom, getPointsSortedHighestFirst } from "./state/PlayersInRooms";
+import {
+  addPlayerToRoom,
+  addPoints,
+  deleteRoom,
+  getPlayersOfRoom,
+  getPointsSortedHighestFirst,
+} from "./state/PlayersInRooms";
 import {
   assignPromptsForPlayers,
+  deleteSavedPromptsForRoom,
   getOnePromptAndAnswersForRoom,
   getNumberOfAnswersForRoom,
   getVotes,
@@ -9,6 +16,9 @@ import {
   storeVoteForPrompt,
 } from "./state/PromptsAnswersVotes";
 
+/**
+ * Handles all player/server interactions
+ */
 export function initializeSocketIo(io) {
   io.on(WS_EVENT.DEFAULT_CONNECTION, (socket) => {
     socket.on(WS_EVENT.INCOMING.HOST_JOINED_ROOM, (roomCode) => {
@@ -31,7 +41,7 @@ export function initializeSocketIo(io) {
     });
     socket.on(WS_EVENT.INCOMING.PLAYER_JOIN, (player) => {
       if (
-        addPlayerToRoom(player.roomCode, {
+        addPlayerToRoom(player.roomCode.toUpperCase(), {
           id: socket.id,
           name: player.playerName,
         })
@@ -39,7 +49,7 @@ export function initializeSocketIo(io) {
         socket.nickname = player.playerName;
         socket.roomCode = player.roomCode;
         socket.join(player.roomCode);
-        console.log(`added ${player.playerName} to room ${player.roomCode}`);
+        console.log(`Added ${player.playerName} to room ${player.roomCode}`);
         socket.emit(WS_EVENT.OUTGOING.SUCCESSFULLY_JOINED_ROOM);
         socket.to(socket.roomCode).emit(WS_EVENT.OUTGOING.LOBBY_PLAYERS_UPDATED, getPlayersOfRoom(player.roomCode));
       }
@@ -76,6 +86,8 @@ export function initializeSocketIo(io) {
     socket.on(WS_EVENT.INCOMING.DISCONNECT, () => {
       console.log(`${socket.nickname} has disconnected from room ${socket.roomCode}`);
       io.in(socket.roomCode).emit(WS_EVENT.OUTGOING.PLAYER_DISCONNECTED, socket.nickname);
+      deleteRoom(socket.roomCode);
+      deleteSavedPromptsForRoom(socket.roomCode);
     });
   });
 }

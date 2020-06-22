@@ -79,7 +79,7 @@ class HostsGame extends Component {
                 <h2>{`${playerAndPoints[0]} : ${playerAndPoints[1]}`}</h2>
               ))}
             </div>
-            <div>Note: Scores carry over to the next game.</div>
+            <div>Scores carry over to the next game.</div>
             <button className="submit-form-button start-new-round-button" onClick={this.onStartNewGameClick}>
               Start New Game
             </button>
@@ -106,6 +106,7 @@ class HostsGame extends Component {
                 );
               })}
             </div>
+            <div>Look at your device and vote for your favorite.</div>
           </div>
         );
       case "VOTING_RESULTS_PHASE":

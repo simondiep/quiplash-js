@@ -1,11 +1,5 @@
 const rooms = {};
 
-export function createRoom() {
-  const roomCode = Math.floor(1000 + Math.random() * 9000).toString();
-  rooms[roomCode] = { players: [], points: {} };
-  return roomCode;
-}
-
 export function addPlayerToRoom(roomCode, player) {
   if (rooms[roomCode]) {
     rooms[roomCode].players.push(player);
@@ -29,6 +23,23 @@ export function addPoints(roomCode, allVotes) {
       rooms[roomCode].points[vote.submitter] += votesReceivedForPrompt;
     }
   }
+}
+
+export function createRoom() {
+  const CHAR_LIST = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
+  let roomCode;
+  do {
+    roomCode = "";
+    for (var i = 0; i < 4; i++) {
+      roomCode += CHAR_LIST.charAt(Math.floor(Math.random() * CHAR_LIST.length));
+    }
+  } while (rooms[roomCode]);
+  rooms[roomCode] = { players: [], points: {} };
+  return roomCode;
+}
+
+export function deleteRoom(roomCode) {
+  delete rooms[roomCode];
 }
 
 export function getPointsSortedHighestFirst(roomCode) {

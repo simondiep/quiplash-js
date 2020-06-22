@@ -8,6 +8,12 @@ const numberOfAnswersForRoom = {};
 // Keep track of prompts that haven't been displayed and voted on yet.
 const unusedPromptsForRoom = {};
 
+export function deleteSavedPromptsForRoom(roomCode) {
+  delete numberOfAnswersForRoom[roomCode];
+  delete promptsForRoom[roomCode];
+  delete unusedPromptsForRoom[roomCode];
+}
+
 export function getOnePromptAndAnswersForRoom(roomCode) {
   const prompt = unusedPromptsForRoom[roomCode].pop();
   const submitters = [];
@@ -65,10 +71,13 @@ export function hasMorePromptsForRoom(roomCode) {
 export function storeAnswerForPrompt({ prompt, playerName, answer, roomCode }) {
   numberOfAnswersForRoom[roomCode]++;
   if (promptsForRoom[roomCode] && promptsForRoom[roomCode][prompt]) {
-    if (!promptsForRoom[roomCode][prompt][answer]) {
-      promptsForRoom[roomCode][prompt][answer] = {};
+    let realAnswer = answer;
+    // Check for duplicate answer and add ditto to it
+    if (promptsForRoom[roomCode][prompt][answer]) {
+      realAnswer = answer + " ditto";
     }
-    promptsForRoom[roomCode][prompt][answer].submitter = playerName;
+    promptsForRoom[roomCode][prompt][realAnswer] = {};
+    promptsForRoom[roomCode][prompt][realAnswer].submitter = playerName;
   }
 }
 
@@ -81,8 +90,7 @@ export function storeVoteForPrompt({ prompt, playerName, roomCode, answerVotedFo
 
 export function assignPromptsForPlayers({ players, roomCode }) {
   if (promptsForRoom[roomCode]) {
-    delete promptsForRoom[roomCode];
-    delete unusedPromptsForRoom[roomCode];
+    deleteSavedPromptsForRoom(roomCode);
   }
   promptsForRoom[roomCode] = {};
   numberOfAnswersForRoom[roomCode] = 0;
