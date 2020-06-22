@@ -2,6 +2,7 @@ import React, { Component } from "react";
 import { withRouter } from "react-router";
 import "./HostsGame.css";
 import { getHostSocket } from "../../SocketIoConnection";
+import { playBackgroundMusic, playPunchSound, speakText } from "./Sounds";
 
 class HostsGame extends Component {
   state = { phase: "SHOW_INSTRUCTIONS" };
@@ -39,24 +40,33 @@ class HostsGame extends Component {
       this.props.history.push("/create");
       return;
     }
+    socket.on("PLAYER_ANSWER_RECEIVED", playPunchSound);
+    socket.on("PLAYER_VOTE_RECEIVED", playPunchSound);
     socket.on("PLAYER_DISCONNECTED", (playerName) => {
       alert(`${playerName} has disconnected from the game.  Please create a new game to keep playing.`);
       this.props.history.push("/create");
     });
-    socket.on("START_GAME", () => this.setState({ phase: "SHOW_INSTRUCTIONS" }));
-    socket.on("START_VOTING_PHASE", (onePromptAndAnswers) =>
+    socket.on("START_GAME", () => {
+      this.setState({ phase: "SHOW_INSTRUCTIONS" });
+      speakText("Starting new game");
+    });
+    socket.on("START_VOTING_PHASE", (onePromptAndAnswers) => {
       this.setState({
         phase: "VOTING_PHASE",
         prompt: onePromptAndAnswers.prompt,
         votingOptions: onePromptAndAnswers.answers,
-      }),
-    );
-    socket.on("VOTING_RESULTS", (votingResults, hasMoreRounds) =>
-      this.setState({ phase: "VOTING_RESULTS_PHASE", hasMoreRounds, votingResults }),
-    );
-    socket.on("SHOW_PLAYER_POINTS", (playersAndPoints) =>
-      this.setState({ phase: "SHOW_PLAYER_POINTS", playersAndPoints }),
-    );
+      });
+      speakText(onePromptAndAnswers.prompt);
+      speakText(`${onePromptAndAnswers.answers[0]}, or, ${onePromptAndAnswers.answers[1]}`);
+    });
+    socket.on("VOTING_RESULTS", (votingResults, hasMoreRounds) => {
+      this.setState({ phase: "VOTING_RESULTS_PHASE", hasMoreRounds, votingResults });
+    });
+    socket.on("SHOW_PLAYER_POINTS", (playersAndPoints) => {
+      this.setState({ phase: "SHOW_PLAYER_POINTS", playersAndPoints });
+      speakText(`Here are the final scores.  ${playersAndPoints} is the winner!`);
+    });
+    playBackgroundMusic();
   }
 
   onStartNewGameClick() {
@@ -124,11 +134,14 @@ class HostsGame extends Component {
                 count++;
                 if (voteResult.state === "WINNER") {
                   cardClasses += " winning-answer";
+                  if (voteResult.quiplash) {
+                    cardClasses += " winning-quiplash";
+                    speakText("Quiplash for " + voteResult.answer);
+                  } else {
+                    speakText("The winner is " + voteResult.answer);
+                  }
                 } else if (voteResult.state === "LOSER") {
                   cardClasses += " losing-answer";
-                }
-                if (voteResult.quiplash) {
-                  cardClasses += " winning-quiplash";
                 }
                 return (
                   <div className="wrapper">

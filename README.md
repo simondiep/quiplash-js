@@ -89,9 +89,14 @@ Note: The React web app needs to get built, whereas the node server does not.
 - prevent duplicate prompts in same game
 - prevent join screen from joining if more than 8 players
 - indicate a max of 8 players on host screen (Redesign to show 8 slots)
+- announcer
+- Sound effects
+  - whip sound after submitting an answer or vote
+- background music (only on host)
 
 ### Not yet started
 
+- only download sounds on host and not players
 - Display single game scores compared to total scores
 - Mobile safari scrolls down too far when inputting an answer, making you unable to see the prompt
 - Tablet support for host (cards too wide)
@@ -100,9 +105,6 @@ Note: The React web app needs to get built, whereas the node server does not.
 - Have first player to join have host controls to start game
 - Testing faster - Automate creation of room and joining of a player
 - Polish to make it look better
-  - Sound effects
-    - whip sound after submitting an answer or vote
-  - background music (only on host)
   - animations
 - host - progress bar for showing who's still submitting their answer
 - support pg13 / r-rated prompts

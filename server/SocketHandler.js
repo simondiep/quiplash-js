@@ -1,8 +1,10 @@
 import {
+  addHostToRoom,
   addPlayerToRoom,
   addPoints,
   doesPlayerNameAlreadyExist,
   deleteRoom,
+  getHostSocketIdForRoom,
   getPlayersOfRoom,
   getPointsSortedHighestFirst,
 } from "./state/PlayersInRooms";
@@ -28,6 +30,7 @@ export function initializeSocketIo(io) {
         socket.join(roomCode);
         socket.nickname = `Host ${roomCode}`;
         socket.roomCode = roomCode;
+        addHostToRoom(roomCode, socket.id);
       }
     });
     socket.on(WS_EVENT.INCOMING.HOST_STARTING_GAME, () => {
@@ -62,14 +65,18 @@ export function initializeSocketIo(io) {
       }
     });
     socket.on(WS_EVENT.INCOMING.SUBMIT_ANSWER, ({ prompt, answer }) => {
-      storeAnswerForPrompt({ prompt, playerName: socket.nickname, answer, roomCode: socket.roomCode });
       console.log("Got answer from ", socket.nickname, ": ", answer);
+      storeAnswerForPrompt({ prompt, playerName: socket.nickname, answer, roomCode: socket.roomCode });
       // CHECK IF ALL PLAYERS HAVE SUBMITTED, then go to next phase (voting)
       if (getPlayersOfRoom(socket.roomCode).length * 2 <= getNumberOfAnswersForRoom(socket.roomCode)) {
         startNewRound(socket, io);
+      } else {
+        // Notify host of progress
+        socket.to(getHostSocketIdForRoom(socket.roomCode)).emit(WS_EVENT.OUTGOING.PLAYER_ANSWER_RECEIVED);
       }
     });
     socket.on(WS_EVENT.INCOMING.SUBMIT_VOTE, ({ prompt, answerVotedFor }) => {
+      console.log("Got vote from ", socket.nickname, ": ", answerVotedFor);
       storeVoteForPrompt({ prompt, playerName: socket.nickname, roomCode: socket.roomCode, answerVotedFor });
       // TALLY Votes and display all votes
       io.in(socket.roomCode).clients((error, clients) => {
@@ -87,6 +94,9 @@ export function initializeSocketIo(io) {
             allVotes,
             hasMorePromptsForRoom(socket.roomCode),
           );
+        } else {
+          // Notify host of progress
+          socket.to(getHostSocketIdForRoom(socket.roomCode)).emit(WS_EVENT.OUTGOING.PLAYER_VOTE_RECEIVED);
         }
       });
     });
@@ -146,6 +156,8 @@ const WS_EVENT = {
   OUTGOING: {
     FAILED_TO_JOIN_ROOM: "FAILED_TO_JOIN_ROOM",
     LOBBY_PLAYERS_UPDATED: "LOBBY_PLAYERS_UPDATED",
+    PLAYER_ANSWER_RECEIVED: "PLAYER_ANSWER_RECEIVED",
+    PLAYER_VOTE_RECEIVED: "PLAYER_VOTE_RECEIVED",
     PLAYER_DISCONNECTED: "PLAYER_DISCONNECTED",
     SHOW_PLAYER_POINTS: "SHOW_PLAYER_POINTS",
     START_GAME: "START_GAME",

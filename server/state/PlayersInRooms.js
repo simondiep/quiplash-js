@@ -1,6 +1,11 @@
 const rooms = {};
 
 const MAX_NUMBER_OF_PLAYERS = 8;
+
+export function addHostToRoom(roomCode, hostSocketId) {
+  rooms[roomCode].hostSocketId = hostSocketId;
+}
+
 export function addPlayerToRoom(roomCode, player) {
   if (rooms[roomCode]) {
     if (rooms[roomCode].players.length >= MAX_NUMBER_OF_PLAYERS) {
@@ -40,6 +45,17 @@ export function deleteRoom(roomCode) {
   delete rooms[roomCode];
 }
 
+export function doesPlayerNameAlreadyExist(roomCode, playerName) {
+  if (rooms[roomCode]) {
+    return rooms[roomCode].players.find((player) => player.name === playerName);
+  }
+  return false;
+}
+
+export function getHostSocketIdForRoom(roomCode) {
+  return rooms[roomCode].hostSocketId;
+}
+
 export function getPointsSortedHighestFirst(roomCode) {
   return Object.entries(rooms[roomCode].points).sort((a, b) => (a[1] > b[1] ? -1 : 1));
 }
@@ -49,11 +65,4 @@ export function getPlayersOfRoom(roomCode) {
     return rooms[roomCode].players;
   }
   return [];
-}
-
-export function doesPlayerNameAlreadyExist(roomCode, playerName) {
-  if (rooms[roomCode]) {
-    return rooms[roomCode].players.find((player) => player.name === playerName);
-  }
-  return false;
 }

@@ -1,6 +1,7 @@
 import React, { Component } from "react";
 import { withRouter } from "react-router";
 import { getHostSocket, initializeHostSocketIoConnection } from "../../SocketIoConnection";
+import { playBackgroundMusic, playWooYeahSound } from "./Sounds";
 import "./Lobby.css";
 
 class Lobby extends Component {
@@ -26,7 +27,9 @@ class Lobby extends Component {
     socket.emit("HOST_JOINED_ROOM", this.getRoomCode());
     socket.on("LOBBY_PLAYERS_UPDATED", (lobbyPlayers) => {
       this.setState({ lobbyPlayers });
+      playWooYeahSound();
     });
+    playBackgroundMusic();
   }
 
   getConnectedPlayersComponent() {

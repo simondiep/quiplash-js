@@ -52,7 +52,7 @@ export function getVotes(prompt, roomCode, numberOfPlayers) {
   const answer2Votes = votes[1].votes.length;
   if (answer1Votes > answer2Votes) {
     votes[0].points += POINTS_PER_VOTE;
-    if (answer1Votes === numberOfPlayers) {
+    if (answer1Votes > 1 && answer1Votes === numberOfPlayers - 2) {
       votes[0].quiplash = true;
       votes[0].points *= 2;
     }
@@ -60,7 +60,7 @@ export function getVotes(prompt, roomCode, numberOfPlayers) {
     votes[1].state = "LOSER";
   } else if (answer2Votes > answer1Votes) {
     votes[1].points += POINTS_PER_VOTE;
-    if (answer2Votes === numberOfPlayers) {
+    if (answer2Votes > 1 && answer2Votes === numberOfPlayers - 2) {
       votes[1].quiplash = true;
       votes[1].points *= 2;
     }
