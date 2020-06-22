@@ -14,6 +14,7 @@ class HostsGame extends Component {
   //     { answer: "I'm doing well", submitter: "Allan", votes: [], state: "LOSER" },
   //     {
   //       answer: "Not so great",
+  //       points: 800,
   //       submitter: "Simon",
   //       votes: ["Allan", "Bobby", "Simon"],
   //       state: "WINNER",
@@ -24,9 +25,9 @@ class HostsGame extends Component {
   // state = {
   //   phase: "SHOW_PLAYER_POINTS",
   //   playersAndPoints: [
-  //     ["simon", 15],
-  //     ["alan", 10],
-  //     ["simon 1234", 3],
+  //     ["simon", 1500],
+  //     ["alan", 1000],
+  //     ["simon 1234", 300],
   //     ["Poop", 0],
   //   ],
   // };
@@ -79,7 +80,7 @@ class HostsGame extends Component {
                 <h2>{`${playerAndPoints[0]} : ${playerAndPoints[1]}`}</h2>
               ))}
             </div>
-            <div>Scores carry over to the next game.</div>
+            <div>Scores carry over to the next game</div>
             <button className="submit-form-button start-new-round-button" onClick={this.onStartNewGameClick}>
               Start New Game
             </button>
@@ -106,7 +107,7 @@ class HostsGame extends Component {
                 );
               })}
             </div>
-            <div>Look at your device and vote for your favorite.</div>
+            <div className="vote-instructions">Look at your device and vote for your favorite.</div>
           </div>
         );
       case "VOTING_RESULTS_PHASE":
@@ -136,6 +137,9 @@ class HostsGame extends Component {
                       <h1>{voteResult.answer}</h1>
                     </div>
                     <div className="submitter">{`Submitted by ${voteResult.submitter}`}</div>
+                    <div className="points-gained">{`${
+                      voteResult.points ? "+" + voteResult.points : "No"
+                    } Points`}</div>
                     <div className="voters">
                       {voteResult.votes.length === 0 ? "No Votes" : voteResult.votes.join(", ")}
                     </div>

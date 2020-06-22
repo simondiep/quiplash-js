@@ -82,13 +82,13 @@ Note: The React web app needs to get built, whereas the node server does not.
 - clean up abandonded rooms
 - room code - use letters instead of numbers
 - handle duplicates/collisions in same answer
+- Points are confusing
+  - need to display points after votes are in
+  - use 100 instead of 1 to more intuitively show points
 
 ### Not yet started
 
-- Points are confusing
-  - need to display points after votes are in
-  - Display single game scores compared to total scores
-  - use 100 instead of 1 to more intuitively show points
+- Display single game scores compared to total scores
 - Mobile safari scrolls down too far when inputting an answer, making you unable to see the prompt
 - Tablet support for host (cards too wide)
 - Display your player name on top of screen (player)

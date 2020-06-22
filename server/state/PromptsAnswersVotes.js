@@ -1,6 +1,7 @@
 import { getRandomPG13Prompt } from "./generated-data/Prompts.pg13";
 import { getRandomRPrompt } from "./generated-data/Prompts.r";
 
+const POINTS_PER_VOTE = 100;
 const promptsForRoom = {};
 
 // Keep track of how many answers are submitted.  Wait until all answers are in before starting game.
@@ -35,7 +36,12 @@ export function getVotes(prompt, roomCode, numberOfPlayers) {
   const votes = [];
   Object.entries(promptsForRoom[roomCode][prompt]).forEach(([answer, properties]) => {
     const totalVotesForAnswer = properties.votes ? properties.votes : [];
-    votes.push({ answer, submitter: properties.submitter, votes: totalVotesForAnswer });
+    votes.push({
+      answer,
+      points: totalVotesForAnswer.length * POINTS_PER_VOTE,
+      submitter: properties.submitter,
+      votes: totalVotesForAnswer,
+    });
   });
   // workaround in case both answers are the same
   if (!votes[1]) {
@@ -45,14 +51,18 @@ export function getVotes(prompt, roomCode, numberOfPlayers) {
   const answer1Votes = votes[0].votes.length;
   const answer2Votes = votes[1].votes.length;
   if (answer1Votes > answer2Votes) {
+    votes[0].points += POINTS_PER_VOTE;
     if (answer1Votes === numberOfPlayers) {
       votes[0].quiplash = true;
+      votes[0].points *= 2;
     }
     votes[0].state = "WINNER";
     votes[1].state = "LOSER";
   } else if (answer2Votes > answer1Votes) {
+    votes[1].points += POINTS_PER_VOTE;
     if (answer2Votes === numberOfPlayers) {
       votes[1].quiplash = true;
+      votes[1].points *= 2;
     }
     votes[0].state = "LOSER";
     votes[1].state = "WINNER";

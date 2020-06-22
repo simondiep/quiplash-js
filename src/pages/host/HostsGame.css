@@ -43,6 +43,10 @@
   padding: 20px;
 }
 
+.points-gained {
+  color: greenyellow;
+}
+
 .prompt {
   font-weight: 700;
   padding: 50px;
@@ -54,6 +58,10 @@
 
 .start-new-round-button {
   margin-top: 100px;
+}
+
+.vote-instructions {
+  padding-top: 40px;
 }
 
 .voters {

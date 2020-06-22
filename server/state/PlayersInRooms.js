@@ -14,14 +14,7 @@ export function addPoints(roomCode, allVotes) {
     if (!rooms[roomCode].points[vote.submitter]) {
       rooms[roomCode].points[vote.submitter] = 0;
     }
-    const numberOfPlayers = rooms[roomCode].players.length;
-    const votesReceivedForPrompt = vote.votes.length;
-    if (numberOfPlayers === votesReceivedForPrompt) {
-      // Double points!
-      rooms[roomCode].points[vote.submitter] += 2 * votesReceivedForPrompt;
-    } else {
-      rooms[roomCode].points[vote.submitter] += votesReceivedForPrompt;
-    }
+    rooms[roomCode].points[vote.submitter] += vote.points;
   }
 }
 
