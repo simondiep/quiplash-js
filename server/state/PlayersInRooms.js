@@ -3,6 +3,7 @@ const rooms = {};
 const MAX_NUMBER_OF_PLAYERS = 8;
 export function addPlayerToRoom(roomCode, player) {
   if (rooms[roomCode]) {
+    if (rooms[roomCode].players.length >= MAX_NUMBER_OF_PLAYERS) {
       console.warn("Could not add player as room is already full: ", roomCode);
       return false;
     }

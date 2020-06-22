@@ -87,9 +87,11 @@ Note: The React web app needs to get built, whereas the node server does not.
   - use 100 instead of 1 to more intuitively show points
 - handle duplicate player names
 - prevent duplicate prompts in same game
+- prevent join screen from joining if more than 8 players
 
 ### Not yet started
 
+- indicate a max of 8 players on host screen (Redesign to show 8 slots)
 - Display single game scores compared to total scores
 - Mobile safari scrolls down too far when inputting an answer, making you unable to see the prompt
 - Tablet support for host (cards too wide)
