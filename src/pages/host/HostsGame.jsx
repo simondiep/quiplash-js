@@ -78,6 +78,7 @@ class HostsGame extends Component {
     });
     socket.on("SHOW_PLAYER_POINTS", (playersAndPoints) => {
       this.setState({ phase: "SHOW_PLAYER_POINTS", playersAndPoints });
+      speakText(`Here are the final scores.  ${playersAndPoints[0][0]} is the winner!`);
     });
     playBackgroundMusic();
   }
