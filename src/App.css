@@ -47,6 +47,10 @@ h2 {
   margin: auto;
 }
 
+.room-code-input {
+  text-transform: uppercase;
+}
+
 .player-button {
   background-color: white;
   border: 1px solid gray;

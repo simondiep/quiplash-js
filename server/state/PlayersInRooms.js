@@ -45,3 +45,10 @@ export function getPlayersOfRoom(roomCode) {
   }
   return [];
 }
+
+export function doesPlayerNameAlreadyExist(roomCode, playerName) {
+  if (rooms[roomCode]) {
+    return rooms[roomCode].players.find((player) => player.name === playerName);
+  }
+  return false;
+}

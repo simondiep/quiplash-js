@@ -1,6 +1,7 @@
 import {
   addPlayerToRoom,
   addPoints,
+  doesPlayerNameAlreadyExist,
   deleteRoom,
   getPlayersOfRoom,
   getPointsSortedHighestFirst,
@@ -40,18 +41,24 @@ export function initializeSocketIo(io) {
       }
     });
     socket.on(WS_EVENT.INCOMING.PLAYER_JOIN, (player) => {
+      let newPlayerName = player.playerName;
+      if (doesPlayerNameAlreadyExist(player.roomCode.toUpperCase(), player.playerName)) {
+        newPlayerName += " ditto";
+      }
       if (
         addPlayerToRoom(player.roomCode.toUpperCase(), {
           id: socket.id,
-          name: player.playerName,
+          name: newPlayerName,
         })
       ) {
-        socket.nickname = player.playerName;
+        socket.nickname = newPlayerName;
         socket.roomCode = player.roomCode;
         socket.join(player.roomCode);
-        console.log(`Added ${player.playerName} to room ${player.roomCode}`);
+        console.log(`Added ${newPlayerName} to room ${player.roomCode}`);
         socket.emit(WS_EVENT.OUTGOING.SUCCESSFULLY_JOINED_ROOM);
         socket.to(socket.roomCode).emit(WS_EVENT.OUTGOING.LOBBY_PLAYERS_UPDATED, getPlayersOfRoom(player.roomCode));
+      } else {
+        socket.emit(WS_EVENT.OUTGOING.FAILED_TO_JOIN_ROOM);
       }
     });
     socket.on(WS_EVENT.INCOMING.SUBMIT_ANSWER, ({ prompt, answer }) => {
@@ -137,6 +144,7 @@ const WS_EVENT = {
     SUBMIT_VOTE: "SUBMIT_VOTE",
   },
   OUTGOING: {
+    FAILED_TO_JOIN_ROOM: "FAILED_TO_JOIN_ROOM",
     LOBBY_PLAYERS_UPDATED: "LOBBY_PLAYERS_UPDATED",
     PLAYER_DISCONNECTED: "PLAYER_DISCONNECTED",
     SHOW_PLAYER_POINTS: "SHOW_PLAYER_POINTS",

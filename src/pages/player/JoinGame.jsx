@@ -20,7 +20,12 @@ class JoinGame extends React.Component {
     e.preventDefault(); // To prevent page reload on form submit
     localStorage.setItem("QUIPLASH_NAME", this.state.playerName);
     const socket = initializePlayerSocketIoConnection();
-    socket.emit("PLAYER_JOIN", { roomCode: this.state.roomCode, playerName: this.state.playerName });
+    if (this.state.roomCode) {
+      socket.emit("PLAYER_JOIN", { roomCode: this.state.roomCode.toUpperCase(), playerName: this.state.playerName });
+    }
+    socket.on("FAILED_TO_JOIN_ROOM", () =>
+      this.setState({ errorMessage: `Failed to join room ${this.state.roomCode.toUpperCase()} as it does not exist.` }),
+    );
     socket.on("SUCCESSFULLY_JOINED_ROOM", () => this.props.history.push(`/game/${this.state.roomCode}`));
   }
 
@@ -38,7 +43,12 @@ class JoinGame extends React.Component {
         <h1>Join a Game</h1>
         <div className="join-game-container">
           <label className="form-label">Room Code</label>
-          <input className="form-input" type="text" placeholder="Four letter code" onChange={this.onRoomCodeChange} />
+          <input
+            className="form-input room-code-input"
+            type="text"
+            placeholder="Four letter code"
+            onChange={this.onRoomCodeChange}
+          />
           <br />
           <label className="form-label">Your Name </label>
           <input

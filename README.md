@@ -85,6 +85,7 @@ Note: The React web app needs to get built, whereas the node server does not.
 - Points are confusing
   - need to display points after votes are in
   - use 100 instead of 1 to more intuitively show points
+- handle duplicate player names
 
 ### Not yet started
 
@@ -109,3 +110,4 @@ Note: The React web app needs to get built, whereas the node server does not.
 - On score screen, recap the most voted answer and prompt
 - A way to shorten the URL to something like qqq.herokuapp.com
 - Each player has own avatar and color (up to 8)
+- Show on host screen which specific players need to look at their devices
