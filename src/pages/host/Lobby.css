@@ -10,7 +10,7 @@
 .connected-players {
   font-size: 30px;
   font-weight: 700;
-  margin: 30px;
+  margin: 10px;
 }
 
 .empty-player-slot {
@@ -65,6 +65,10 @@
 }
 
 @media (min-width: 1024px) {
+  .connected-players {
+    margin: 30px;
+  }
+
   .instructions-cell {
     max-width: unset;
     width: 66%;

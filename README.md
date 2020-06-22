@@ -93,13 +93,15 @@ Note: The React web app needs to get built, whereas the node server does not.
 - Sound effects
   - whip sound after submitting an answer or vote
 - background music (only on host)
+- Tablet support for host (cards too wide)
 
 ### Not yet started
 
+- mute button for background music
+- more suitable announcer voice
 - only download sounds on host and not players
 - Display single game scores compared to total scores
 - Mobile safari scrolls down too far when inputting an answer, making you unable to see the prompt
-- Tablet support for host (cards too wide)
 - Display your player name on top of screen (player)
   - Maybe merge JoinGame and StartGame components or have a parent component to keep track of player name?
 - Have first player to join have host controls to start game
