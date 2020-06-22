@@ -1,6 +1,7 @@
 import React from "react";
 import { withRouter } from "react-router";
 import { initializePlayerSocketIoConnection } from "../../SocketIoConnection";
+import "./JoinGame.css";
 
 class JoinGame extends React.Component {
   constructor(props) {
@@ -44,17 +45,17 @@ class JoinGame extends React.Component {
       <form onSubmit={this.handleJoinClick}>
         <h1>Join a Game</h1>
         <div className="join-game-container">
-          <label className="form-label">Room Code</label>
+          <label className="join-form-label">Room Code</label>
           <input
-            className="form-input room-code-input"
+            className="join-form-input room-code-input"
             type="text"
             placeholder="Four letter code"
             onChange={this.onRoomCodeChange}
           />
           <br />
-          <label className="form-label">Your Name </label>
+          <label className="join-form-label">Your Name </label>
           <input
-            className="form-input"
+            className="join-form-input"
             type="text"
             placeholder="Name"
             defaultValue={this.getSavedName()}
@@ -62,7 +63,7 @@ class JoinGame extends React.Component {
           />
           <br />
         </div>
-        <button className="player-button" type="submit">
+        <button className="player-submit-button" type="submit">
           Play
         </button>
         <div>{this.state.errorMessage}</div>

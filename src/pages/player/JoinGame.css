@@ -1,0 +1,24 @@
+.join-form-input {
+  border: 1px solid white;
+  border-radius: 5px;
+  color: black;
+  font-size: 18px;
+  padding: 5px;
+}
+
+.join-form-label {
+  display: block;
+  font-size: 24px;
+  font-weight: 700;
+  margin-top: 10px;
+  text-align: left;
+}
+
+.join-game-container {
+  max-width: 240px;
+  margin: auto;
+}
+
+.room-code-input {
+  text-transform: uppercase;
+}

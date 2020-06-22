@@ -46,7 +46,6 @@ class Lobby extends Component {
   render() {
     return (
       <div>
-        <h1>Quiplash-JS</h1>
         <div className="lobby-room-instructions">
           Go to <span className="room-url">quiplashjs.herokuapp.com</span> on your mobile device
         </div>

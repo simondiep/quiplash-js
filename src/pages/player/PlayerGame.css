@@ -1,0 +1,46 @@
+.answer-input {
+  border: 1px solid white;
+  border-radius: 5px;
+  color: black;
+  padding: 5px;
+  font-size: 32px;
+  margin: 20px;
+  max-width: 200px;
+}
+
+.player-submit-button {
+  background-color: white;
+  border: 1px solid gray;
+  border-radius: 5px;
+  font-size: 40px;
+  margin: 20px;
+  min-height: 70px;
+  min-width: 220px;
+  padding-left: 20px;
+  padding-right: 20px;
+}
+
+@media (min-width: 640px) {
+  .answer-input {
+    max-width: 400px;
+  }
+}
+
+@media (min-width: 1024px) {
+  .answer-input {
+    max-width: unset;
+  }
+
+  .player-submit-button {
+    margin: 40px;
+  }
+}
+
+/** Only apply hover effects to non-mobile devices */
+@media (hover: hover) {
+  .player-submit-button:hover {
+    background-color: darkgreen;
+    border: 1px solid gray;
+    color: white;
+  }
+}

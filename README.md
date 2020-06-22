@@ -92,6 +92,7 @@ Note: The React web app needs to get built, whereas the node server does not.
 ### Not yet started
 
 - indicate a max of 8 players on host screen (Redesign to show 8 slots)
+  - Could be resused for score table
 - Display single game scores compared to total scores
 - Mobile safari scrolls down too far when inputting an answer, making you unable to see the prompt
 - Tablet support for host (cards too wide)

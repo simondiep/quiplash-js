@@ -21,74 +21,6 @@ h2 {
   margin: 0;
 }
 
-.form-input {
-  border: 1px solid white;
-  border-radius: 5px;
-  color: black;
-  font-size: 18px;
-  padding: 5px;
-}
-
-.form-input.player {
-  font-size: 32px;
-  margin: 20px;
-  max-width: 200px;
-}
-
-.form-label {
-  display: block;
-  font-size: 24px;
-  font-weight: 700;
-  margin-top: 10px;
-}
-
-.join-game-container {
-  max-width: 240px;
-  margin: auto;
-}
-
-.room-code-input {
-  text-transform: uppercase;
-}
-
-.player-button {
-  background-color: white;
-  border: 1px solid gray;
-  border-radius: 5px;
-  font-size: 40px;
-  margin: 20px;
-  min-height: 70px;
-  min-width: 220px;
-  padding-left: 20px;
-  padding-right: 20px;
-}
-
-/** Only apply hover effects to non-mobile devices */
-@media (hover: hover) {
-  .player-button:hover {
-    background-color: darkgreen;
-    border: 1px solid gray;
-    color: white;
-  }
-}
-
-.submit-form-button {
-  background-color: white;
-  border: 1px solid gray;
-  border-radius: 5px;
-  height: 50px;
-  margin-top: 20px;
-  font-size: 24px;
-  padding: 0;
-  width: 220px;
-}
-
-.submit-form-button:hover {
-  background-color: darkgreen;
-  border: 1px solid gray;
-  color: white;
-}
-
 @media (min-width: 640px) {
   h1 {
     font-size: 40px;
@@ -96,10 +28,6 @@ h2 {
 
   h2 {
     font-size: 30px;
-  }
-
-  .form-input.player {
-    max-width: 400px;
   }
 }
 
@@ -110,13 +38,5 @@ h2 {
 
   h2 {
     font-size: 50px;
-  }
-
-  .form-input.player {
-    max-width: unset;
-  }
-
-  .player-button {
-    margin: 40px;
   }
 }

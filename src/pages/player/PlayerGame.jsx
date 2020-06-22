@@ -1,6 +1,7 @@
 import React, { Component } from "react";
 import { withRouter } from "react-router";
 import { getPlayerSocket } from "../../SocketIoConnection";
+import "./PlayerGame.css";
 
 class PlayerGame extends Component {
   state = { phase: "WAITING_TO_START", answer: "" };
@@ -78,7 +79,7 @@ class PlayerGame extends Component {
             <div>
               <h1 dangerouslySetInnerHTML={{ __html: this.state.promptsToAnswer[this.state.currentPromptNumber] }}></h1>
               <input
-                className="form-input player"
+                className="answer-input"
                 type="text"
                 placeholder="Answer Here"
                 value={this.state.answer}
@@ -86,7 +87,7 @@ class PlayerGame extends Component {
               />
               <br />
             </div>
-            <button className="player-button" type="submit">
+            <button className="player-submit-button" type="submit">
               Submit
             </button>
           </form>
@@ -99,7 +100,7 @@ class PlayerGame extends Component {
             <h1 dangerouslySetInnerHTML={{ __html: this.state.prompt }}></h1>
             <h2>Which one do you like more?</h2>
             {this.state.votingOptions.map((voteOption) => (
-              <button className="player-button" onClick={() => this.handleSubmitVoteClick(voteOption)}>
+              <button className="player-submit-button" onClick={() => this.handleSubmitVoteClick(voteOption)}>
                 {voteOption}
               </button>
             ))}

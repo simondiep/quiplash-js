@@ -7,7 +7,7 @@
 .lobby-room-code-text {
   color: gray;
   display: inline-block;
-  font-size: 60px;
+  font-size: 40px;
   font-weight: 700;
   user-select: none;
 }
@@ -28,4 +28,5 @@
 .room-url {
   font-size: 60px;
   font-weight: 700;
+  text-decoration: underline;
 }
