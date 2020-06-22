@@ -36,9 +36,9 @@ class JoinGame extends React.Component {
     return (
       <form onSubmit={this.handleJoinClick}>
         <h1>Join a Game</h1>
-        <div>
+        <div className="join-game-container">
           <label className="form-label">Room Code</label>
-          <input className="form-input" type="text" placeholder="Four digit code" onChange={this.onRoomCodeChange} />
+          <input className="form-input" type="text" placeholder="Four letter code" onChange={this.onRoomCodeChange} />
           <br />
           <label className="form-label">Your Name </label>
           <input

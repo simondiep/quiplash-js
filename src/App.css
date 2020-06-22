@@ -37,9 +37,14 @@ h2 {
 
 .form-label {
   display: block;
-  font-size: 32px;
+  font-size: 24px;
   font-weight: 700;
   margin-top: 10px;
+}
+
+.join-game-container {
+  max-width: 240px;
+  margin: auto;
 }
 
 .player-button {

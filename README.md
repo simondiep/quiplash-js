@@ -94,10 +94,10 @@ Note: The React web app needs to get built, whereas the node server does not.
 - Display your player name on top of screen (player)
   - Maybe merge JoinGame and StartGame components or have a parent component to keep track of player name?
 - Have first player to join have host controls to start game
-- Time out inactive lobbies
 - Testing faster - Automate creation of room and joining of a player
 - Polish to make it look better
   - Sound effects
+    - whip sound after submitting an answer or vote
   - background music (only on host)
   - animations
 - host - progress bar for showing who's still submitting their answer
@@ -107,3 +107,5 @@ Note: The React web app needs to get built, whereas the node server does not.
 - consider converting REST endpoint into websocket call
 - better instructions for those that haven't played before
 - On score screen, recap the most voted answer and prompt
+- A way to shorten the URL to something like qqq.herokuapp.com
+- Each player has own avatar and color (up to 8)
