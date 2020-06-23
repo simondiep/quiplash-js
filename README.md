@@ -98,7 +98,7 @@ Note: The React web app needs to get built, whereas the node server does not.
 ### Not yet started
 
 - mute button for background music
-- more suitable announcer voice
+- more suitable announcer voice that is consistent for windows and macos
 - only download sounds on host and not players
 - Display single game scores compared to total scores
 - Mobile safari scrolls down too far when inputting an answer, making you unable to see the prompt
