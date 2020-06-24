@@ -23,7 +23,7 @@ function playSound(elementId) {
 export function speakText(text) {
   const utterance = new SpeechSynthesisUtterance(text);
   // utterance.lang = "en-GB";
-  // utterance.rate = 2;
+  utterance.rate = 1.2;
   // utterance.pitch = 2;
   window.speechSynthesis.speak(utterance);
 }

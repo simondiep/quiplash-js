@@ -48,6 +48,18 @@
   text-decoration: underline;
 }
 
+.quick-links-container {
+  position: absolute;
+  top: 0;
+  left: 0;
+}
+
+.quick-links-container a {
+  color: white;
+  opacity: 0.15;
+  text-decoration: none;
+}
+
 .start-game-button {
   display: block;
   margin-left: auto;

@@ -1,5 +1,6 @@
 import React, { Component } from "react";
 import { withRouter } from "react-router";
+import { Link } from "react-router-dom";
 import { getHostSocket, initializeHostSocketIoConnection } from "../../SocketIoConnection";
 import { playBackgroundMusic, playWooYeahSound } from "./Sounds";
 import "./Lobby.css";
@@ -69,23 +70,30 @@ class Lobby extends Component {
 
   render() {
     return (
-      <table>
-        <tr>
-          <td className="instructions-cell">
-            <div className="lobby-room-instructions">
-              Go to <span className="room-url">quiplashjs.herokuapp.com</span> on your mobile device
-            </div>
-            <div className="lobby-room-code-text">Room Code</div>
-            <div className="room-code">{this.getRoomCode()}</div>
-            <button className="submit-form-button start-game-button" onClick={this.onStartGameClick.bind(this)}>
-              Start Game
-            </button>
-          </td>
-          <td className="players-cell">
-            <div className="connected-players">{this.getConnectedPlayersComponent()}</div>
-          </td>
-        </tr>
-      </table>
+      <div>
+        <div className="quick-links-container">
+          <Link to="/create">HOST</Link>
+          <br />
+          <Link to="/">JOIN</Link>
+        </div>
+        <table>
+          <tr>
+            <td className="instructions-cell">
+              <div className="lobby-room-instructions">
+                Go to <span className="room-url">quiplashjs.herokuapp.com</span> on your mobile device
+              </div>
+              <div className="lobby-room-code-text">Room Code</div>
+              <div className="room-code">{this.getRoomCode()}</div>
+              <button className="submit-form-button start-game-button" onClick={this.onStartGameClick.bind(this)}>
+                Start Game
+              </button>
+            </td>
+            <td className="players-cell">
+              <div className="connected-players">{this.getConnectedPlayersComponent()}</div>
+            </td>
+          </tr>
+        </table>
+      </div>
     );
   }
 }

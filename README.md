@@ -94,6 +94,7 @@ Note: The React web app needs to get built, whereas the node server does not.
   - whip sound after submitting an answer or vote
 - background music (only on host)
 - Tablet support for host (cards too wide)
+- have 404s on /game/ABCD redirect to /
 
 ### Not yet started
 

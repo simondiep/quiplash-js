@@ -9,13 +9,10 @@ body {
 }
 
 h1 {
-  font-size: 30px;
+  font-size: 24px;
   font-weight: 700;
   margin: 0;
-  padding-top: 50px;
-  padding-left: 10px;
-  padding-right: 10px;
-  padding-bottom: 50px;
+  padding: 10px;
 }
 
 h2 {
@@ -23,21 +20,11 @@ h2 {
   margin: 0;
 }
 
-.quick-links-container {
-  position: absolute;
-  top: 0;
-  left: 0;
-}
-
-.quick-links-container a {
-  color: white;
-  opacity: 0.15;
-  text-decoration: none;
-}
-
 @media (min-width: 640px) {
   h1 {
     font-size: 40px;
+    padding-top: 30px;
+    padding-bottom: 20px;
   }
 
   h2 {
@@ -48,6 +35,8 @@ h2 {
 @media (min-width: 1024px) {
   h1 {
     font-size: 80px;
+    padding-top: 50px;
+    padding-bottom: 50px;
   }
 
   h2 {

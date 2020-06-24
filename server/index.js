@@ -17,6 +17,9 @@ app.get("/", function (req, res) {
 app.get("/create", function (req, res) {
   res.sendFile(path.join(__dirname, "..", "build", "index.html"));
 });
+app.get("/game/*", function (req, res) {
+  res.sendFile(path.join(__dirname, "..", "build", "index.html"));
+});
 
 app.post("/create-new-game", function (req, res, next) {
   const roomCode = createRoom();

@@ -1,5 +1,6 @@
 import React from "react";
 import { withRouter } from "react-router";
+import { speakText } from "./Sounds";
 
 function CreateNewGame(props) {
   function handleClick() {
@@ -20,6 +21,9 @@ function CreateNewGame(props) {
       <h1>Quiplash-JS</h1>
       <button className="submit-form-button" onClick={handleClick}>
         Start new Game
+      </button>
+      <button style={{ position: "absolute", top: 0, right: 0 }} onClick={() => speakText("Testing")}>
+        Test Audio
       </button>
     </div>
   );
