@@ -1,6 +1,5 @@
 import React from "react";
 import { withRouter } from "react-router";
-import { Link } from "react-router-dom";
 import { initializePlayerSocketIoConnection } from "../../SocketIoConnection";
 import "./JoinGame.css";
 
@@ -43,40 +42,32 @@ class JoinGame extends React.Component {
 
   render() {
     return (
-      <div>
-        {/* For easier testing */}
-        <div className="quick-links-container">
-          <Link to="/create">HOST</Link>
+      <form onSubmit={this.handleJoinClick}>
+        <h1>Join a Game</h1>
+        <div className="join-game-container">
+          <label className="join-form-label">Room Code</label>
+          <input
+            className="join-form-input room-code-input"
+            type="text"
+            placeholder="Four letter code"
+            onChange={this.onRoomCodeChange}
+          />
           <br />
-          <Link to="/">JOIN</Link>
+          <label className="join-form-label">Your Name </label>
+          <input
+            className="join-form-input"
+            type="text"
+            placeholder="Name"
+            defaultValue={this.getSavedName()}
+            onChange={this.onNameChange}
+          />
+          <br />
         </div>
-        <form onSubmit={this.handleJoinClick}>
-          <h1>Join a Game</h1>
-          <div className="join-game-container">
-            <label className="join-form-label">Room Code</label>
-            <input
-              className="join-form-input room-code-input"
-              type="text"
-              placeholder="Four letter code"
-              onChange={this.onRoomCodeChange}
-            />
-            <br />
-            <label className="join-form-label">Your Name </label>
-            <input
-              className="join-form-input"
-              type="text"
-              placeholder="Name"
-              defaultValue={this.getSavedName()}
-              onChange={this.onNameChange}
-            />
-            <br />
-          </div>
-          <button className="player-submit-button" type="submit">
-            Play
-          </button>
-          <div>{this.state.errorMessage}</div>
-        </form>
-      </div>
+        <button className="player-submit-button" type="submit">
+          Play
+        </button>
+        <div>{this.state.errorMessage}</div>
+      </form>
     );
   }
 }
