@@ -25,6 +25,6 @@ export function speakText(text) {
   // utterance.lang = "en-GB";
   utterance.rate = 1.2;
   // utterance.pitch = 2;
-  utterance.volume = 0.5;
+  utterance.volume = 0.25;
   window.speechSynthesis.speak(utterance);
 }
