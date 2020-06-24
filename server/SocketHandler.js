@@ -7,6 +7,7 @@ import {
   getHostSocketIdForRoom,
   getPlayersOfRoom,
   getPointsSortedHighestFirst,
+  storeStartGame,
 } from "./state/PlayersInRooms";
 import {
   assignPromptsForPlayers,
@@ -116,6 +117,7 @@ function startNewGame(socket) {
     players,
     roomCode: socket.roomCode,
   });
+  storeStartGame(socket.roomCode);
   promptsForPlayers.forEach((promptsForPlayer) => {
     socket.to(promptsForPlayer.player.id).emit(WS_EVENT.OUTGOING.START_GAME, promptsForPlayer.prompts);
   });

@@ -8,7 +8,11 @@ export function addHostToRoom(roomCode, hostSocketId) {
 
 export function addPlayerToRoom(roomCode, player) {
   if (rooms[roomCode]) {
-    if (rooms[roomCode].players.length >= MAX_NUMBER_OF_PLAYERS) {
+    if (rooms[roomCode].started) {
+      console.warn("Could not add player as game has already started: ", roomCode);
+      return false;
+    }
+    if (rooms[roomCode].players.length > MAX_NUMBER_OF_PLAYERS) {
       console.warn("Could not add player as room is already full: ", roomCode);
       return false;
     }
@@ -65,4 +69,8 @@ export function getPlayersOfRoom(roomCode) {
     return rooms[roomCode].players;
   }
   return [];
+}
+
+export function storeStartGame(roomCode) {
+  rooms[roomCode].started = true;
 }
