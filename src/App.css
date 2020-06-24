@@ -23,6 +23,18 @@ h2 {
   margin: 0;
 }
 
+.quick-links-container {
+  position: absolute;
+  top: 0;
+  left: 0;
+}
+
+.quick-links-container a {
+  color: white;
+  opacity: 0.15;
+  text-decoration: none;
+}
+
 @media (min-width: 640px) {
   h1 {
     font-size: 40px;

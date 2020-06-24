@@ -100,7 +100,7 @@ Note: The React web app needs to get built, whereas the node server does not.
 - mute button for background music
 - more suitable announcer voice that is consistent for windows and macos
 - only download sounds on host and not players
-- Display single game scores compared to total scores
+- Display single game scores compared to total scores (before / after)
 - Mobile safari scrolls down too far when inputting an answer, making you unable to see the prompt
 - Display your player name on top of screen (player)
   - Maybe merge JoinGame and StartGame components or have a parent component to keep track of player name?
@@ -118,3 +118,5 @@ Note: The React web app needs to get built, whereas the node server does not.
 - A way to shorten the URL to something like qqq.herokuapp.com
 - Each player has own avatar and color (up to 8)
 - Show on host screen which specific players need to look at their devices
+- 3 round games (number of players = prompts per single round)
+- Last round you fill out the same prompt and allow awarding gold and silver awards to not your answer

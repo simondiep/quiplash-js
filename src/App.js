@@ -21,7 +21,7 @@ class App extends Component {
     return (
       <Router>
         <div>
-          <div style={{ position: "absolute", top: 0, left: 0, opacity: 0 }}>
+          <div className="quick-links-container">
             <Link to="/create">HOST</Link>
             <br />
             <Link to="/">JOIN</Link>

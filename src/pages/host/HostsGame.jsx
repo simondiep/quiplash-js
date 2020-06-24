@@ -34,6 +34,7 @@ class HostsGame extends Component {
   // };
 
   componentDidMount() {
+    this.onStartNewGameNewPlayersClick = this.onStartNewGameNewPlayersClick.bind(this);
     const socket = getHostSocket();
     if (!socket) {
       // For easier local debugging with live-reload changes
@@ -48,7 +49,9 @@ class HostsGame extends Component {
     });
     socket.on("START_GAME", () => {
       this.setState({ phase: "SHOW_INSTRUCTIONS" });
-      speakText("Starting new game");
+      speakText(
+        "Starting new game.  You'll get two prompts. Enter something hilarious. Your friends will vote for the most funny response.",
+      );
     });
     socket.on("START_VOTING_PHASE", (onePromptAndAnswers) => {
       this.setState({
@@ -57,7 +60,7 @@ class HostsGame extends Component {
         votingOptions: onePromptAndAnswers.answers,
       });
       speakText(onePromptAndAnswers.prompt);
-      speakText(`${onePromptAndAnswers.answers[0]}, or, ${onePromptAndAnswers.answers[1]}`);
+      speakText(`${onePromptAndAnswers.answers[0]}, or, ${onePromptAndAnswers.answers[1]}.  Vote now!`);
     });
     socket.on("VOTING_RESULTS", (votingResults, hasMoreRounds) => {
       this.setState({ phase: "VOTING_RESULTS_PHASE", hasMoreRounds, votingResults });
@@ -83,7 +86,11 @@ class HostsGame extends Component {
     playBackgroundMusic();
   }
 
-  onStartNewGameClick() {
+  onStartNewGameNewPlayersClick() {
+    this.props.history.push("/create");
+  }
+
+  onStartNewGameSamePlayersClick() {
     getHostSocket().emit("HOST_STARTING_GAME");
   }
 
@@ -105,9 +112,18 @@ class HostsGame extends Component {
               ))}
             </div>
             <div>Scores carry over to the next game</div>
-            <button className="submit-form-button start-new-round-button" onClick={this.onStartNewGameClick}>
-              Start New Game
-            </button>
+            <div className="start-game-buttons-container">
+              Start New Game with
+              <button
+                className="submit-form-button start-new-game-button"
+                onClick={this.onStartNewGameSamePlayersClick}
+              >
+                Same players
+              </button>
+              <button className="submit-form-button start-new-game-button" onClick={this.onStartNewGameNewPlayersClick}>
+                New players
+              </button>
+            </div>
           </div>
         );
       case "VOTING_PHASE":
