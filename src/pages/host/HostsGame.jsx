@@ -41,23 +41,34 @@ class HostsGame extends Component {
       this.props.history.push("/create");
       return;
     }
-    socket.on("PLAYER_ANSWER_RECEIVED", playPunchSound);
-    socket.on("PLAYER_VOTE_RECEIVED", playPunchSound);
+    socket.on("PLAYER_ANSWER_RECEIVED", (expectedNumberOfAnswers, receivedNumberOfAnswers) => {
+      playPunchSound();
+      this.setState({ expectedNumberOfAnswers, receivedNumberOfAnswers });
+    });
+    socket.on("PLAYER_VOTE_RECEIVED", (expectedNumberOfVotes, receivedNumberOfVotes) => {
+      playPunchSound();
+      this.setState({
+        expectedNumberOfVotes,
+        receivedNumberOfVotes,
+      });
+    });
     socket.on("PLAYER_DISCONNECTED", (playerName) => {
       alert(`${playerName} has disconnected from the game.  Please create a new game to keep playing.`);
       this.props.history.push("/create");
     });
-    socket.on("START_GAME", () => {
-      this.setState({ phase: "SHOW_INSTRUCTIONS" });
+    socket.on("START_GAME", (expectedNumberOfAnswers) => {
+      this.setState({ phase: "SHOW_INSTRUCTIONS", expectedNumberOfAnswers, receivedNumberOfAnswers: 0 });
       speakText(
         "Starting new game.  You'll get two prompts. Enter something hilarious. Your friends will vote for the most funny response.",
       );
     });
-    socket.on("START_VOTING_PHASE", (onePromptAndAnswers) => {
+    socket.on("START_VOTING_PHASE", (onePromptAndAnswers, expectedNumberOfVotes) => {
       this.setState({
         phase: "VOTING_PHASE",
         prompt: onePromptAndAnswers.prompt,
         votingOptions: onePromptAndAnswers.answers,
+        expectedNumberOfVotes,
+        receivedNumberOfVotes: 0,
       });
       speakText(onePromptAndAnswers.prompt);
       speakText(`${onePromptAndAnswers.answers[0]}, or, ${onePromptAndAnswers.answers[1]}.  Vote now!`);
@@ -101,7 +112,12 @@ class HostsGame extends Component {
   render() {
     switch (this.state.phase) {
       case "SHOW_INSTRUCTIONS":
-        return <h1>Look at your devices. Fill out a silly answer to your prompt.</h1>;
+        return (
+          <div>
+            <h1>Look at your devices. Fill out a silly answer to your prompt.</h1>
+            <div>{`${this.state.receivedNumberOfAnswers}/${this.state.expectedNumberOfAnswers} answers received`}</div>
+          </div>
+        );
       case "SHOW_PLAYER_POINTS":
         return (
           <div>
@@ -148,6 +164,7 @@ class HostsGame extends Component {
               })}
             </div>
             <div className="vote-instructions">Look at your device and vote for your favorite.</div>
+            <div>{`${this.state.receivedNumberOfVotes}/${this.state.expectedNumberOfVotes} votes received`}</div>
           </div>
         );
       case "VOTING_RESULTS_PHASE":

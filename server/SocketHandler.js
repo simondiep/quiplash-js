@@ -69,11 +69,15 @@ export function initializeSocketIo(io) {
       console.log("Got answer from ", socket.nickname, ": ", answer);
       storeAnswerForPrompt({ prompt, playerName: socket.nickname, answer, roomCode: socket.roomCode });
       // CHECK IF ALL PLAYERS HAVE SUBMITTED, then go to next phase (voting)
-      if (getPlayersOfRoom(socket.roomCode).length * 2 <= getNumberOfAnswersForRoom(socket.roomCode)) {
+      const expectedNumberOfAnswers = getPlayersOfRoom(socket.roomCode).length * 2;
+      const receivedNumberOfAnswers = getNumberOfAnswersForRoom(socket.roomCode);
+      if (receivedNumberOfAnswers >= expectedNumberOfAnswers) {
         startNewRound(socket, io);
       } else {
         // Notify host of progress
-        socket.to(getHostSocketIdForRoom(socket.roomCode)).emit(WS_EVENT.OUTGOING.PLAYER_ANSWER_RECEIVED);
+        socket
+          .to(getHostSocketIdForRoom(socket.roomCode))
+          .emit(WS_EVENT.OUTGOING.PLAYER_ANSWER_RECEIVED, expectedNumberOfAnswers, receivedNumberOfAnswers);
       }
     });
     socket.on(WS_EVENT.INCOMING.SUBMIT_VOTE, ({ prompt, answerVotedFor }) => {
@@ -86,7 +90,8 @@ export function initializeSocketIo(io) {
         const totalVotes = allVotes.reduce(function (currentSum, votersPerAnswer) {
           return currentSum + votersPerAnswer.votes.length;
         }, 0);
-        if (totalVotes >= clients.length - 3) {
+        const expectedNumberOfVotes = getPlayersOfRoom(socket.roomCode).length - 2;
+        if (totalVotes >= expectedNumberOfVotes) {
           // assign points
           addPoints(socket.roomCode, allVotes);
           // io.in Makes sure the original player gets this
@@ -97,7 +102,9 @@ export function initializeSocketIo(io) {
           );
         } else {
           // Notify host of progress
-          socket.to(getHostSocketIdForRoom(socket.roomCode)).emit(WS_EVENT.OUTGOING.PLAYER_VOTE_RECEIVED);
+          socket
+            .to(getHostSocketIdForRoom(socket.roomCode))
+            .emit(WS_EVENT.OUTGOING.PLAYER_VOTE_RECEIVED, expectedNumberOfVotes, totalVotes);
         }
       });
     });
@@ -121,16 +128,22 @@ function startNewGame(socket) {
   promptsForPlayers.forEach((promptsForPlayer) => {
     socket.to(promptsForPlayer.player.id).emit(WS_EVENT.OUTGOING.START_GAME, promptsForPlayer.prompts);
   });
-  socket.emit(WS_EVENT.OUTGOING.START_GAME);
+  const expectedNumberOfAnswers = getPlayersOfRoom(socket.roomCode).length * 2;
+  socket.emit(WS_EVENT.OUTGOING.START_GAME, expectedNumberOfAnswers);
 }
 
 function startNewRound(socket, io) {
   console.log("Starting round for room ", socket.roomCode);
   const onePromptAndAnswers = getOnePromptAndAnswersForRoom(socket.roomCode);
-  io.in(socket.roomCode).emit(WS_EVENT.OUTGOING.START_VOTING_PHASE, {
-    prompt: onePromptAndAnswers.prompt,
-    answers: onePromptAndAnswers.answers,
-  });
+  const expectedNumberOfVotes = getPlayersOfRoom(socket.roomCode).length - 2;
+  io.in(socket.roomCode).emit(
+    WS_EVENT.OUTGOING.START_VOTING_PHASE,
+    {
+      prompt: onePromptAndAnswers.prompt,
+      answers: onePromptAndAnswers.answers,
+    },
+    expectedNumberOfVotes,
+  );
   // check if player answered prompt and instead send WAIT_FOR_VOTES_ON_YOUR_PROMPT
   const players = getPlayersOfRoom(socket.roomCode);
   for (let player of players) {

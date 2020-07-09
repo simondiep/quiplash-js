@@ -96,6 +96,8 @@ Note: The React web app needs to get built, whereas the node server does not.
 - Tablet support for host (cards too wide)
 - have 404s on /game/ABCD redirect to /
 - prevent joining after game starts
+- host - progress bar for showing who's still submitting their answer
+- host - progress bar for showing who's still voting
 
 ### Not yet started
 
@@ -110,7 +112,6 @@ Note: The React web app needs to get built, whereas the node server does not.
 - Testing faster - Automate creation of room and joining of a player
 - Polish to make it look better
   - animations
-- host - progress bar for showing who's still submitting their answer
 - support pg13 / r-rated prompts
 - keep track of used prompts so they don't repeat
 - allow side-voting for creative answers
@@ -120,5 +121,5 @@ Note: The React web app needs to get built, whereas the node server does not.
 - A way to shorten the URL to something like qqq.herokuapp.com
 - Each player has own avatar and color (up to 8)
 - Show on host screen which specific players need to look at their devices
-- 3 round games (number of players = prompts per single round)
+- 3 game rounds (first, double points, final lash)
 - Last round you fill out the same prompt and allow awarding gold and silver awards to not your answer
