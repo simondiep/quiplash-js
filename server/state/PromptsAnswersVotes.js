@@ -8,11 +8,14 @@ const promptsForRoom = {};
 const numberOfAnswersForRoom = {};
 // Keep track of prompts that haven't been displayed and voted on yet.
 const unusedPromptsForRoom = {};
+// Keep track of winning answers for the score screen
+const winningAnswersForRoom = {};
 
 export function deleteSavedPromptsForRoom(roomCode) {
   delete numberOfAnswersForRoom[roomCode];
   delete promptsForRoom[roomCode];
   delete unusedPromptsForRoom[roomCode];
+  delete winningAnswersForRoom[roomCode];
 }
 
 export function getOnePromptAndAnswersForRoom(roomCode) {
@@ -30,6 +33,11 @@ export function getOnePromptAndAnswersForRoom(roomCode) {
 
 export function getNumberOfAnswersForRoom(roomCode) {
   return numberOfAnswersForRoom[roomCode];
+}
+
+export function getPopularAnswers(roomCode) {
+  winningAnswersForRoom[roomCode].sort((a, b) => (a.votes > b.votes ? -1 : 1));
+  return winningAnswersForRoom[roomCode];
 }
 
 export function getVotes(prompt, roomCode, numberOfPlayers) {
@@ -58,6 +66,7 @@ export function getVotes(prompt, roomCode, numberOfPlayers) {
     }
     votes[0].state = "WINNER";
     votes[1].state = "LOSER";
+    winningAnswersForRoom[roomCode].push(votes[0]);
   } else if (answer2Votes > answer1Votes) {
     votes[1].points += POINTS_PER_VOTE;
     if (answer2Votes > 1 && answer2Votes === numberOfPlayers - 2) {
@@ -66,6 +75,7 @@ export function getVotes(prompt, roomCode, numberOfPlayers) {
     }
     votes[0].state = "LOSER";
     votes[1].state = "WINNER";
+    winningAnswersForRoom[roomCode].push(votes[1]);
   } else {
     votes[0].state = "TIE";
     votes[1].state = "TIE";
@@ -105,6 +115,7 @@ export function assignPromptsForPlayers({ players, roomCode }) {
   promptsForRoom[roomCode] = {};
   numberOfAnswersForRoom[roomCode] = 0;
   unusedPromptsForRoom[roomCode] = [];
+  winningAnswersForRoom[roomCode] = [];
   const promptsForPlayers = [];
 
   // Total number of prompts is equal to the number of players

@@ -98,6 +98,7 @@ Note: The React web app needs to get built, whereas the node server does not.
 - prevent joining after game starts
 - host - progress bar for showing who's still submitting their answer
 - host - progress bar for showing who's still voting
+- On score screen, recap the most voted answer and prompt
 
 ### Not yet started
 
@@ -117,7 +118,6 @@ Note: The React web app needs to get built, whereas the node server does not.
 - allow side-voting for creative answers
 - consider converting REST endpoint into websocket call
 - better instructions for those that haven't played before
-- On score screen, recap the most voted answer and prompt
 - A way to shorten the URL to something like qqq.herokuapp.com
 - Each player has own avatar and color (up to 8)
 - Show on host screen which specific players need to look at their devices

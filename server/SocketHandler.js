@@ -14,6 +14,7 @@ import {
   deleteSavedPromptsForRoom,
   getOnePromptAndAnswersForRoom,
   getNumberOfAnswersForRoom,
+  getPopularAnswers,
   getVotes,
   hasMorePromptsForRoom,
   storeAnswerForPrompt,
@@ -41,7 +42,11 @@ export function initializeSocketIo(io) {
       if (hasMorePromptsForRoom(socket.roomCode)) {
         startNewRound(socket, io);
       } else {
-        io.in(socket.roomCode).emit(WS_EVENT.OUTGOING.SHOW_PLAYER_POINTS, getPointsSortedHighestFirst(socket.roomCode));
+        io.in(socket.roomCode).emit(
+          WS_EVENT.OUTGOING.SHOW_PLAYER_POINTS,
+          getPointsSortedHighestFirst(socket.roomCode),
+          getPopularAnswers(socket.roomCode),
+        );
       }
     });
     socket.on(WS_EVENT.INCOMING.PLAYER_JOIN, (player) => {

@@ -90,8 +90,8 @@ class HostsGame extends Component {
         }
       }
     });
-    socket.on("SHOW_PLAYER_POINTS", (playersAndPoints) => {
-      this.setState({ phase: "SHOW_PLAYER_POINTS", playersAndPoints });
+    socket.on("SHOW_PLAYER_POINTS", (playersAndPoints, popularAnswers) => {
+      this.setState({ phase: "SHOW_PLAYER_POINTS", playersAndPoints, popularAnswers });
       speakText(`Here are the final scores.  ${playersAndPoints[0][0]} is the winner!`);
     });
     playBackgroundMusic();
@@ -122,23 +122,40 @@ class HostsGame extends Component {
         return (
           <div>
             <h1>Final Scores</h1>
-            <div className="player-scores">
-              {this.state.playersAndPoints.map((playerAndPoints) => (
-                <h2>{`${playerAndPoints[0]} : ${playerAndPoints[1]}`}</h2>
-              ))}
-            </div>
-            <div>Scores carry over to the next game</div>
-            <div className="start-game-buttons-container">
-              Start New Game with
-              <button
-                className="submit-form-button start-new-game-button"
-                onClick={this.onStartNewGameSamePlayersClick}
-              >
-                Same players
-              </button>
-              <button className="submit-form-button start-new-game-button" onClick={this.onStartNewGameNewPlayersClick}>
-                New players
-              </button>
+            <div className="player-scores-container">
+              <div>
+                <div>Most popular answer</div>
+                <div className="popular-answer">{this.state.popularAnswers[0].answer}</div>
+                <div className="popular-answer-submitter">{`Submitted by ${this.state.popularAnswers[0].submitter}`}</div>
+              </div>
+              <div>
+                <div className="player-scores">
+                  {this.state.playersAndPoints.map((playerAndPoints) => (
+                    <h2>{`${playerAndPoints[0]} : ${playerAndPoints[1]}`}</h2>
+                  ))}
+                </div>
+                <div>Scores carry over to the next game</div>
+                <div className="start-game-buttons-container">
+                  Start New Game with
+                  <button
+                    className="submit-form-button start-new-game-button"
+                    onClick={this.onStartNewGameSamePlayersClick}
+                  >
+                    Same players
+                  </button>
+                  <button
+                    className="submit-form-button start-new-game-button"
+                    onClick={this.onStartNewGameNewPlayersClick}
+                  >
+                    New players
+                  </button>
+                </div>
+              </div>
+              <div>
+                <div>Second most popular answer</div>
+                <div className="popular-answer">{this.state.popularAnswers[1].answer}</div>
+                <div className="popular-answer-submitter">{`Submitted by ${this.state.popularAnswers[1].submitter}`}</div>
+              </div>
             </div>
           </div>
         );

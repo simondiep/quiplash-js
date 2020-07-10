@@ -42,8 +42,22 @@
   padding: 20px;
 }
 
+.player-scores-container {
+  display: flex;
+  justify-content: space-evenly;
+}
+
 .points-gained {
   color: greenyellow;
+}
+
+.popular-answer {
+  font-size: 50px;
+  font-weight: 700;
+}
+
+.popular-answer-submitter {
+  color: whitesmoke;
 }
 
 .prompt {
