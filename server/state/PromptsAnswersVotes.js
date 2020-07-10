@@ -36,8 +36,9 @@ export function getNumberOfAnswersForRoom(roomCode) {
 }
 
 export function getPopularAnswers(roomCode) {
-  winningAnswersForRoom[roomCode].sort((a, b) => (a.votes > b.votes ? -1 : 1));
-  return winningAnswersForRoom[roomCode];
+  const winningAnswers = Object.values(winningAnswersForRoom[roomCode]);
+  winningAnswers.sort((a, b) => (a.points > b.points ? -1 : 1));
+  return winningAnswers;
 }
 
 export function getVotes(prompt, roomCode, numberOfPlayers) {
@@ -66,7 +67,15 @@ export function getVotes(prompt, roomCode, numberOfPlayers) {
     }
     votes[0].state = "WINNER";
     votes[1].state = "LOSER";
-    winningAnswersForRoom[roomCode].push(votes[0]);
+
+    if (
+      winningAnswersForRoom[roomCode][votes[0].answer] &&
+      winningAnswersForRoom[roomCode][votes[0].answer].points < votes[0].points
+    ) {
+      winningAnswersForRoom[roomCode][votes[0].answer] = votes[0];
+    } else {
+      winningAnswersForRoom[roomCode][votes[0].answer] = votes[0];
+    }
   } else if (answer2Votes > answer1Votes) {
     votes[1].points += POINTS_PER_VOTE;
     if (answer2Votes > 1 && answer2Votes === numberOfPlayers - 2) {
@@ -75,7 +84,15 @@ export function getVotes(prompt, roomCode, numberOfPlayers) {
     }
     votes[0].state = "LOSER";
     votes[1].state = "WINNER";
-    winningAnswersForRoom[roomCode].push(votes[1]);
+
+    if (
+      winningAnswersForRoom[roomCode][votes[1].answer] &&
+      winningAnswersForRoom[roomCode][votes[1].answer].points < votes[1].points
+    ) {
+      winningAnswersForRoom[roomCode][votes[1].answer] = votes[1];
+    } else {
+      winningAnswersForRoom[roomCode][votes[1].answer] = votes[1];
+    }
   } else {
     votes[0].state = "TIE";
     votes[1].state = "TIE";
