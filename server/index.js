@@ -3,6 +3,7 @@ import { initializeSocketIo } from "./SocketHandler";
 import { createRoom } from "./state/PlayersInRooms";
 
 const app = express();
+app.use(express.json());
 const server = require("http").createServer(app);
 const io = require("socket.io")(server);
 
@@ -22,7 +23,7 @@ app.get("/game/*", function (req, res) {
 });
 
 app.post("/create-new-game", function (req, res, next) {
-  const roomCode = createRoom();
+  const roomCode = createRoom(req.body);
   res.send(roomCode);
 });
 

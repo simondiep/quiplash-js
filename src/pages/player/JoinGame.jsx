@@ -1,7 +1,7 @@
 import React from "react";
 import { withRouter } from "react-router";
 import { Link } from "react-router-dom";
-import { initializePlayerSocketIoConnection } from "../../SocketIoConnection";
+import { clearSockets, initializePlayerSocketIoConnection } from "../../SocketIoConnection";
 import "./JoinGame.css";
 
 class JoinGame extends React.Component {
@@ -11,6 +11,7 @@ class JoinGame extends React.Component {
     this.onNameChange = this.onNameChange.bind(this);
     this.onRoomCodeChange = this.onRoomCodeChange.bind(this);
     this.state = { errorMessage: "", playerName: this.getSavedName() };
+    clearSockets();
   }
 
   getSavedName() {

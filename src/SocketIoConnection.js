@@ -13,6 +13,15 @@ export function initializePlayerSocketIoConnection() {
   return playerSocket;
 }
 
+export function clearSockets() {
+  if (hostSocket) {
+    hostSocket.disconnect();
+  }
+  if (playerSocket) {
+    playerSocket.disconnect();
+  }
+}
+
 export function getHostSocket() {
   return hostSocket;
 }

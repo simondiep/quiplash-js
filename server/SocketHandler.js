@@ -7,6 +7,7 @@ import {
   getHostSocketIdForRoom,
   getPlayersOfRoom,
   getPointsSortedHighestFirst,
+  getRoomOptions,
   storeStartGame,
 } from "./state/PlayersInRooms";
 import {
@@ -71,7 +72,11 @@ export function initializeSocketIo(io) {
       }
     });
     socket.on(WS_EVENT.INCOMING.SUBMIT_ANSWER, ({ prompt, answer }) => {
-      console.log("Got answer from ", socket.nickname, ": ", answer);
+      if (answer.startsWith("data:")) {
+        console.log("Got picture from ", socket.nickname);
+      } else {
+        console.log("Got answer from ", socket.nickname, ": ", answer);
+      }
       storeAnswerForPrompt({ prompt, playerName: socket.nickname, answer, roomCode: socket.roomCode });
       // CHECK IF ALL PLAYERS HAVE SUBMITTED, then go to next phase (voting)
       const expectedNumberOfAnswers = getPlayersOfRoom(socket.roomCode).length * 2;
@@ -86,7 +91,12 @@ export function initializeSocketIo(io) {
       }
     });
     socket.on(WS_EVENT.INCOMING.SUBMIT_VOTE, ({ prompt, answerVotedFor }) => {
-      console.log("Got vote from ", socket.nickname, ": ", answerVotedFor);
+      if (answerVotedFor.startsWith("data:")) {
+        console.log("Got vote from ", socket.nickname, " for picture");
+      } else {
+        console.log("Got vote from ", socket.nickname, ": ", answerVotedFor);
+      }
+
       storeVoteForPrompt({ prompt, playerName: socket.nickname, roomCode: socket.roomCode, answerVotedFor });
       // TALLY Votes and display all votes
       io.in(socket.roomCode).clients((error, clients) => {
@@ -131,7 +141,9 @@ function startNewGame(socket) {
   });
   storeStartGame(socket.roomCode);
   promptsForPlayers.forEach((promptsForPlayer) => {
-    socket.to(promptsForPlayer.player.id).emit(WS_EVENT.OUTGOING.START_GAME, promptsForPlayer.prompts);
+    socket
+      .to(promptsForPlayer.player.id)
+      .emit(WS_EVENT.OUTGOING.START_GAME, promptsForPlayer.prompts, getRoomOptions(socket.roomCode));
   });
   const expectedNumberOfAnswers = getPlayersOfRoom(socket.roomCode).length * 2;
   socket.emit(WS_EVENT.OUTGOING.START_GAME, expectedNumberOfAnswers);

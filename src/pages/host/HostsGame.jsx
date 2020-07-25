@@ -71,17 +71,21 @@ class HostsGame extends Component {
         receivedNumberOfVotes: 0,
       });
       speakText(onePromptAndAnswers.prompt);
-      speakText(`${onePromptAndAnswers.answers[0]}, or, ${onePromptAndAnswers.answers[1]}.  Vote now!`);
+      speakText(
+        `${getSpokenAnswer(onePromptAndAnswers.answers[0])}, or, ${getSpokenAnswer(
+          onePromptAndAnswers.answers[1],
+        )}.  Vote now!`,
+      );
     });
     socket.on("VOTING_RESULTS", (votingResults, hasMoreRounds) => {
       this.setState({ phase: "VOTING_RESULTS_PHASE", hasMoreRounds, votingResults });
       for (let votingResult of votingResults) {
         if (votingResult.state === "WINNER") {
           if (votingResult.quiplash) {
-            speakText("Quiplash for " + votingResult.answer);
+            speakText("Quiplash for " + getSpokenAnswer(votingResult.answer));
             break;
           } else {
-            speakText("The winner is " + votingResult.answer);
+            speakText("The winner is " + getSpokenAnswer(votingResult.answer));
             break;
           }
         } else if (votingResult.state === "TIE") {
@@ -119,16 +123,26 @@ class HostsGame extends Component {
           </div>
         );
       case "SHOW_PLAYER_POINTS":
+        const popularAnswerOne = this.state.popularAnswers[0].answer.startsWith("data:") ? (
+          <img className="uploaded-image" src={this.state.popularAnswers[0].answer} />
+        ) : (
+          <div>{this.state.popularAnswers[0].answer}</div>
+        );
+        const popularAnswerTwo = this.state.popularAnswers[1].answer.startsWith("data:") ? (
+          <img className="uploaded-image" src={this.state.popularAnswers[1].answer} />
+        ) : (
+          <div>{this.state.popularAnswers[1].answer}</div>
+        );
         return (
           <div>
             <h1>Final Scores</h1>
             <div className="player-scores-container">
-              <div>
+              <div className="player-scores-column">
                 <div>Most popular answer</div>
-                <div className="popular-answer">{this.state.popularAnswers[0].answer}</div>
+                <div className="popular-answer">{popularAnswerOne}</div>
                 <div className="popular-answer-submitter">{`Submitted by ${this.state.popularAnswers[0].submitter}`}</div>
               </div>
-              <div>
+              <div className="player-scores-column">
                 <div className="player-scores">
                   {this.state.playersAndPoints.map((playerAndPoints) => (
                     <h2>{`${playerAndPoints[0]} : ${playerAndPoints[1]}`}</h2>
@@ -151,9 +165,9 @@ class HostsGame extends Component {
                   </button>
                 </div>
               </div>
-              <div>
+              <div className="player-scores-column">
                 <div>Second most popular answer</div>
-                <div className="popular-answer">{this.state.popularAnswers[1].answer}</div>
+                <div className="popular-answer">{popularAnswerTwo}</div>
                 <div className="popular-answer-submitter">{`Submitted by ${this.state.popularAnswers[1].submitter}`}</div>
               </div>
             </div>
@@ -171,11 +185,14 @@ class HostsGame extends Component {
                   cardClasses += " reversed";
                 }
                 answersCount++;
+                const cardContent = voteOption.startsWith("data:") ? (
+                  <img className="uploaded-image" src={voteOption} />
+                ) : (
+                  <h1>{voteOption}</h1>
+                );
                 return (
                   <div className="wrapper">
-                    <div className={cardClasses}>
-                      <h1>{voteOption}</h1>
-                    </div>
+                    <div className={cardClasses}>{cardContent}</div>
                   </div>
                 );
               })}
@@ -204,11 +221,16 @@ class HostsGame extends Component {
                 } else if (voteResult.state === "LOSER") {
                   cardClasses += " losing-answer";
                 }
+                const cardContent = voteResult.answer.startsWith("data:") ? (
+                  <img className="uploaded-image" src={voteResult.answer} />
+                ) : (
+                  <h1>{voteResult.answer}</h1>
+                );
                 return (
                   <div className="wrapper">
                     <div className={cardClasses}>
                       {voteResult.quiplash && <div className="quiplash-text">QUIPLASH</div>}
-                      <h1>{voteResult.answer}</h1>
+                      {cardContent}
                     </div>
                     <div className="submitter">{`Submitted by ${voteResult.submitter}`}</div>
                     <div className="points-gained">{`${
@@ -230,6 +252,13 @@ class HostsGame extends Component {
         throw new Error("Invalid Host State ", this.state.phase);
     }
   }
+}
+
+function getSpokenAnswer(answer) {
+  if (answer.startsWith("data:")) {
+    return "this picture";
+  }
+  return answer;
 }
 
 export default withRouter(HostsGame);

@@ -32,7 +32,7 @@ export function addPoints(roomCode, allVotes) {
   }
 }
 
-export function createRoom() {
+export function createRoom(roomOptions) {
   const CHAR_LIST = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
   let roomCode;
   do {
@@ -41,7 +41,7 @@ export function createRoom() {
       roomCode += CHAR_LIST.charAt(Math.floor(Math.random() * CHAR_LIST.length));
     }
   } while (rooms[roomCode]);
-  rooms[roomCode] = { players: [], points: {} };
+  rooms[roomCode] = { players: [], points: {}, roomOptions };
   return roomCode;
 }
 
@@ -69,6 +69,10 @@ export function getPlayersOfRoom(roomCode) {
     return rooms[roomCode].players;
   }
   return [];
+}
+
+export function getRoomOptions(roomCode) {
+  return rooms[roomCode].roomOptions;
 }
 
 export function storeStartGame(roomCode) {

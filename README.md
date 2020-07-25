@@ -28,6 +28,12 @@ Playable in the same room or remotely via screensharing.
 
 Note: The React web app needs to get built, whereas the node server does not.
 
+### Testing on another device
+
+- Start local server
+- If you have a firewall, ensure it allows connections from NodeJS
+- Open your other device's browser and connect to `HOST_IP:3001`
+
 ## Directory Structure
 
 - `build` - Built web app
@@ -99,6 +105,7 @@ Note: The React web app needs to get built, whereas the node server does not.
 - host - progress bar for showing who's still submitting their answer
 - host - progress bar for showing who's still voting
 - On score screen, recap the most voted answer and prompt
+- Allow players to upload images for answers
 
 ### Not yet started
 
@@ -123,3 +130,5 @@ Note: The React web app needs to get built, whereas the node server does not.
 - Show on host screen which specific players need to look at their devices
 - 3 game rounds (first, double points, final lash)
 - Last round you fill out the same prompt and allow awarding gold and silver awards to not your answer
+- Reduce quality of uploaded images for better performance
+- Don't send images to players for better performance

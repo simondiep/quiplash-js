@@ -21,6 +21,9 @@ class PlayerGame extends Component {
     this.handleSubmitVoteClick = this.handleSubmitVoteClick.bind(this);
     this.handleSubmitVoteClick = this.handleSubmitVoteClick.bind(this);
     this.onAnswerChange = this.onAnswerChange.bind(this);
+    this.onPictureTaken = this.onPictureTaken.bind(this);
+    this.takePictureInputRef = React.createRef();
+    this.takeSelfieInputRef = React.createRef();
   }
 
   componentDidMount() {
@@ -34,8 +37,8 @@ class PlayerGame extends Component {
       alert(`${playerName} has disconnected from the game.  Please join a new game to keep playing.`);
       this.props.history.push("/");
     });
-    socket.on("START_GAME", (promptsToAnswer) =>
-      this.setState({ phase: "STARTED", promptsToAnswer, currentPromptNumber: 0 }),
+    socket.on("START_GAME", (promptsToAnswer, roomOptions) =>
+      this.setState({ phase: "STARTED", promptsToAnswer, currentPromptNumber: 0, roomOptions }),
     );
     socket.on("START_VOTING_PHASE", (onePromptAndAnswers) =>
       this.setState({
@@ -71,6 +74,25 @@ class PlayerGame extends Component {
     this.setState({ answer: event.target.value });
   }
 
+  onPictureTaken(event) {
+    const picture = event.target.files[0];
+    if (picture) {
+      const reader = new FileReader();
+      reader.onload = () => {
+        getPlayerSocket().emit("SUBMIT_ANSWER", {
+          prompt: this.state.promptsToAnswer[this.state.currentPromptNumber],
+          answer: reader.result,
+        });
+        if (this.state.currentPromptNumber >= 1) {
+          this.setState({ answer: "", phase: "SUBMITTED_ANSWER" });
+        } else {
+          this.setState({ answer: "", currentPromptNumber: 1 });
+        }
+      };
+      reader.readAsDataURL(picture);
+    }
+  }
+
   render() {
     switch (this.state.phase) {
       case "STARTED":
@@ -88,22 +110,62 @@ class PlayerGame extends Component {
               <br />
             </div>
             <button className="player-submit-button" type="submit">
-              Submit
+              Submit Answer
             </button>
+            {this.state.roomOptions.allowPictureUploads && (
+              <div style={{ display: this.state.roomOptions.allowPictureUploads ? "block" : "none" }}>
+                <div>or</div>
+                <button className="player-submit-button" onClick={() => this.takePictureInputRef.current.click()}>
+                  Take a picture
+                </button>
+                <input
+                  type="file"
+                  accept="image/*"
+                  capture="environment"
+                  onChange={this.onPictureTaken}
+                  ref={this.takePictureInputRef}
+                  style={{ display: "none" }}
+                />
+                <div>or</div>
+                <button className="player-submit-button" onClick={() => this.takeSelfieInputRef.current.click()}>
+                  Take a selfie
+                </button>
+                <input
+                  type="file"
+                  accept="image/*"
+                  capture="user"
+                  onChange={this.onPictureTaken}
+                  ref={this.takeSelfieInputRef}
+                  style={{ display: "none" }}
+                />
+              </div>
+            )}
           </form>
         );
       case "SUBMITTED_ANSWER":
         return <h1>Waiting for other players to submit their responses...</h1>;
       case "VOTING":
+        let answersCount = 0;
         return (
           <div>
             <h1 dangerouslySetInnerHTML={{ __html: this.state.prompt }}></h1>
             <h2>Which one do you like more?</h2>
-            {this.state.votingOptions.map((voteOption) => (
-              <button className="player-submit-button" onClick={() => this.handleSubmitVoteClick(voteOption)}>
-                {voteOption}
-              </button>
-            ))}
+            {this.state.votingOptions.map((voteOption) => {
+              let buttonText = voteOption;
+              if (voteOption.startsWith("data:")) {
+                if (answersCount === 0) {
+                  buttonText = "The left picture";
+                } else {
+                  buttonText = "The right picture";
+                }
+              }
+              answersCount++;
+              return (
+                <button className="player-submit-button" onClick={() => this.handleSubmitVoteClick(voteOption)}>
+                  {buttonText}
+                </button>
+              );
+            })}
           </div>
         );
       case "WAITING_TO_START":

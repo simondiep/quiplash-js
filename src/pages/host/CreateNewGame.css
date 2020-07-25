@@ -1,0 +1,15 @@
+.room-options {
+  padding: 20px;
+}
+
+.room-options-checkbox {
+  height: 20px;
+  width: 20px;
+  margin-right: 10px;
+}
+
+.test-audio-button {
+  position: absolute;
+  top: 0;
+  right: 0;
+}
