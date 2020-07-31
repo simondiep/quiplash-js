@@ -106,6 +106,7 @@ Note: The React web app needs to get built, whereas the node server does not.
 - host - progress bar for showing who's still voting
 - On score screen, recap the most voted answer and prompt
 - Allow players to upload images for answers
+- Keep mobile browsers from going to sleep while playing
 
 ### Not yet started
 

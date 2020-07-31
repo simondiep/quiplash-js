@@ -9,6 +9,7 @@
     "@babel/register": "^7.10.1",
     "express": "^4.17.1",
     "ignore-styles": "^5.0.1",
+    "nosleep.js": "^0.11.0",
     "react": "^16.13.1",
     "react-dom": "^16.13.1",
     "react-router-dom": "^5.2.0",
