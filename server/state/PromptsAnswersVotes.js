@@ -1,5 +1,5 @@
 import { getRandomPG13Prompt } from "./generated-data/Prompts.pg13";
-import { getRandomRPrompt } from "./generated-data/Prompts.r";
+import { getRandomPicturePrompt } from "./generated-data/Prompts.pics";
 
 const POINTS_PER_VOTE = 100;
 const promptsForRoom = {};
@@ -125,7 +125,7 @@ export function storeVoteForPrompt({ prompt, playerName, roomCode, answerVotedFo
   promptsForRoom[roomCode][prompt][answerVotedFor].votes.push(playerName);
 }
 
-export function assignPromptsForPlayers({ players, roomCode }) {
+export function assignPromptsForPlayers({ players, roomCode, roomOptions }) {
   if (promptsForRoom[roomCode]) {
     deleteSavedPromptsForRoom(roomCode);
   }
@@ -140,7 +140,7 @@ export function assignPromptsForPlayers({ players, roomCode }) {
   for (let i = 0; i < players.length; i++) {
     let prompt;
     do {
-      prompt = getRandomPG13Prompt();
+      prompt = roomOptions.allowPictureUploads ? getRandomPicturePrompt() : getRandomPG13Prompt();
     } while (prompts.includes(prompt));
     prompts.push(prompt);
     promptsForRoom[roomCode][prompt] = {};

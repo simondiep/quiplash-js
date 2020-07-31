@@ -135,15 +135,15 @@ export function initializeSocketIo(io) {
 function startNewGame(socket) {
   console.log("Host is starting game for room ", socket.roomCode);
   const players = getPlayersOfRoom(socket.roomCode);
+  const roomOptions = getRoomOptions(socket.roomCode);
   const promptsForPlayers = assignPromptsForPlayers({
     players,
     roomCode: socket.roomCode,
+    roomOptions,
   });
   storeStartGame(socket.roomCode);
   promptsForPlayers.forEach((promptsForPlayer) => {
-    socket
-      .to(promptsForPlayer.player.id)
-      .emit(WS_EVENT.OUTGOING.START_GAME, promptsForPlayer.prompts, getRoomOptions(socket.roomCode));
+    socket.to(promptsForPlayer.player.id).emit(WS_EVENT.OUTGOING.START_GAME, promptsForPlayer.prompts, roomOptions);
   });
   const expectedNumberOfAnswers = getPlayersOfRoom(socket.roomCode).length * 2;
   socket.emit(WS_EVENT.OUTGOING.START_GAME, expectedNumberOfAnswers);
