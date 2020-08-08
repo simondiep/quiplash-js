@@ -1,5 +1,6 @@
 import express from "express";
-import { initializeSocketIo } from "./SocketHandler";
+import { initializeQuiplashHandler } from "./handlers/QuiplashHandler";
+import { initializeShakeGameHandler } from "./handlers/ShakeGameHandler";
 import { createRoom } from "./state/PlayersInRooms";
 
 const app = express();
@@ -27,7 +28,8 @@ app.post("/create-new-game", function (req, res, next) {
   res.send(roomCode);
 });
 
-initializeSocketIo(io);
+initializeQuiplashHandler(io);
+initializeShakeGameHandler(io);
 
 // start the app
 server.listen(PORT, (error) => {

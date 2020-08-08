@@ -7,15 +7,16 @@ import "./CreateNewGame.css";
 class CreateNewGame extends React.Component {
   constructor(props) {
     super(props);
-    this.handleClick = this.handleClick.bind(this);
+    this.onStartGameClick = this.onStartGameClick.bind(this);
     this.onAllowPicturesChange = this.onAllowPicturesChange.bind(this);
     this.state = {
       allowPictureUploads: false,
+      playShakeGame: false,
     };
     clearSockets();
   }
 
-  handleClick() {
+  onStartGameClick() {
     fetch("/create-new-game", {
       method: "POST",
       body: JSON.stringify(this.state),
@@ -42,8 +43,8 @@ class CreateNewGame extends React.Component {
     return (
       <div>
         <h1>Quiplash-JS</h1>
-        <button className="submit-form-button" onClick={this.handleClick}>
-          Start new Game
+        <button className="submit-form-button" onClick={this.onStartGameClick}>
+          Start new Quiplash Game
         </button>
         <div className="room-options">
           <label>
@@ -51,6 +52,14 @@ class CreateNewGame extends React.Component {
             Allow Picture Uploads
           </label>
         </div>
+        <button
+          className="submit-form-button"
+          onClick={() => {
+            this.setState({ playShakeGame: true }, this.onStartGameClick);
+          }}
+        >
+          Start new Shake Game
+        </button>
         <button className="test-audio-button" onClick={() => speakText("Testing")}>
           Test Audio
         </button>

@@ -2,9 +2,17 @@ import React, { Component } from "react";
 import { withRouter } from "react-router";
 import { getPlayerSocket } from "../../SocketIoConnection";
 import "./PlayerGame.css";
+import holdPhoneDownImage from "../../images/hold-phone-down.png";
+import holdPhoneMidImage from "../../images/hold-phone-mid.png";
+import holdPhoneUpImage from "../../images/hold-phone-up.png";
 
 class PlayerGame extends Component {
   state = { phase: "WAITING_TO_START", answer: "" };
+  // state = {
+  //   phase: "START_SHAKING",
+  //   shakes: 0,
+  //   yAccel: 0,
+  // };
   // Test state
   // state = {
   //   phase: "STARTED",
@@ -22,8 +30,10 @@ class PlayerGame extends Component {
     this.handleSubmitVoteClick = this.handleSubmitVoteClick.bind(this);
     this.onAnswerChange = this.onAnswerChange.bind(this);
     this.onPictureTaken = this.onPictureTaken.bind(this);
+    this.handleMotion = this.handleMotion.bind(this);
     this.takePictureInputRef = React.createRef();
     this.takeSelfieInputRef = React.createRef();
+    window.addEventListener("devicemotion", this.handleMotion);
   }
 
   componentDidMount() {
@@ -48,6 +58,8 @@ class PlayerGame extends Component {
       }),
     );
     socket.on("WAIT_FOR_VOTES_ON_YOUR_PROMPT", () => this.setState({ phase: "WAIT_FOR_VOTES_ON_YOUR_PROMPT" }));
+    socket.on("START_SHAKING", () => this.setState({ phase: "START_SHAKING", shakes: 0 }));
+    socket.on("SHAKE_RESULTS", () => this.setState({ phase: "WAITING_FOR_NEXT_ROUND", yAccel: 0, shakes: 0 }));
   }
 
   handleSubmitAnswerClick(e) {
@@ -174,8 +186,53 @@ class PlayerGame extends Component {
         return <h1>See the results on the host screen</h1>;
       case "WAIT_FOR_VOTES_ON_YOUR_PROMPT":
         return <h1>See others vote for your answer on the host screen</h1>;
+      case "START_SHAKING":
+        let imgSrc;
+        if (this.state.yAccel > 0) {
+          imgSrc = holdPhoneUpImage;
+        } else if (this.state.yAccel < 0) {
+          imgSrc = holdPhoneDownImage;
+        } else {
+          imgSrc = holdPhoneMidImage;
+        }
+        let speedText = "Stopped";
+        const absSpeed = Math.abs(this.state.yAccel);
+        if (absSpeed > 10) {
+          speedText = "Too fast to read!";
+        } else if (absSpeed > 5) {
+          speedText = "So Fast";
+        } else if (absSpeed > 3) {
+          speedText = "Fast";
+        } else if (absSpeed >= 1) {
+          speedText = "Slow";
+        }
+        return (
+          <div>
+            <h1>Start Shaking!</h1>
+            <img src={imgSrc} className="shake-image" />
+            <div>{`Speed: ${speedText}`}</div>
+            <h1>{`Number of Shakes: ${this.state.shakes}`}</h1>
+          </div>
+        );
       default:
         throw new Error("Invalid Player State ", this.state.phase);
+    }
+  }
+
+  handleMotion(event) {
+    event.preventDefault();
+    if (this.state.phase === "WAITING_TO_START" || this.state.phase === "START_SHAKING") {
+      const currentAccel = Math.round(event.acceleration.y);
+      const previousYAccel = Math.round(this.state.yAccel);
+      let shakes = this.state.shakes;
+      if ((previousYAccel > 0 && currentAccel < 0) || (previousYAccel < 0 && currentAccel > 0)) {
+        shakes++;
+        getPlayerSocket().emit("SHAKE_COUNT_UP");
+      }
+      this.setState({
+        yAccel: currentAccel,
+        shakes,
+      });
     }
   }
 }

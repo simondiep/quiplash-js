@@ -9,7 +9,7 @@ import {
   getPointsSortedHighestFirst,
   getRoomOptions,
   storeStartGame,
-} from "./state/PlayersInRooms";
+} from "../state/PlayersInRooms";
 import {
   assignPromptsForPlayers,
   deleteSavedPromptsForRoom,
@@ -20,12 +20,13 @@ import {
   hasMorePromptsForRoom,
   storeAnswerForPrompt,
   storeVoteForPrompt,
-} from "./state/PromptsAnswersVotes";
+} from "../state/PromptsAnswersVotes";
+import WS_EVENT from "./WebsocketEvents";
 
 /**
  * Handles all player/server interactions
  */
-export function initializeSocketIo(io) {
+export function initializeQuiplashHandler(io) {
   io.on(WS_EVENT.DEFAULT_CONNECTION, (socket) => {
     socket.on(WS_EVENT.INCOMING.HOST_JOINED_ROOM, (roomCode) => {
       if (roomCode) {
@@ -136,17 +137,21 @@ function startNewGame(socket) {
   console.log("Host is starting game for room ", socket.roomCode);
   const players = getPlayersOfRoom(socket.roomCode);
   const roomOptions = getRoomOptions(socket.roomCode);
-  const promptsForPlayers = assignPromptsForPlayers({
-    players,
-    roomCode: socket.roomCode,
-    roomOptions,
-  });
-  storeStartGame(socket.roomCode);
-  promptsForPlayers.forEach((promptsForPlayer) => {
-    socket.to(promptsForPlayer.player.id).emit(WS_EVENT.OUTGOING.START_GAME, promptsForPlayer.prompts, roomOptions);
-  });
-  const expectedNumberOfAnswers = getPlayersOfRoom(socket.roomCode).length * 2;
-  socket.emit(WS_EVENT.OUTGOING.START_GAME, expectedNumberOfAnswers);
+  if (roomOptions.playShakeGame) {
+    socket.emit(WS_EVENT.OUTGOING.SHOW_SHAKE_INSTRUCTIONS, getPlayersOfRoom(socket.roomCode));
+  } else {
+    const promptsForPlayers = assignPromptsForPlayers({
+      players,
+      roomCode: socket.roomCode,
+      roomOptions,
+    });
+    storeStartGame(socket.roomCode);
+    promptsForPlayers.forEach((promptsForPlayer) => {
+      socket.to(promptsForPlayer.player.id).emit(WS_EVENT.OUTGOING.START_GAME, promptsForPlayer.prompts, roomOptions);
+    });
+    const expectedNumberOfAnswers = getPlayersOfRoom(socket.roomCode).length * 2;
+    socket.emit(WS_EVENT.OUTGOING.START_GAME, expectedNumberOfAnswers);
+  }
 }
 
 function startNewRound(socket, io) {
@@ -173,29 +178,3 @@ function startNewRound(socket, io) {
     }
   }
 }
-
-const WS_EVENT = {
-  DEFAULT_CONNECTION: "connection",
-  INCOMING: {
-    DISCONNECT: "disconnect",
-    HOST_JOINED_ROOM: "HOST_JOINED_ROOM",
-    HOST_STARTING_GAME: "HOST_STARTING_GAME",
-    HOST_START_ROUND: "HOST_START_ROUND",
-    PLAYER_JOIN: "PLAYER_JOIN",
-    SUBMIT_ANSWER: "SUBMIT_ANSWER",
-    SUBMIT_VOTE: "SUBMIT_VOTE",
-  },
-  OUTGOING: {
-    FAILED_TO_JOIN_ROOM: "FAILED_TO_JOIN_ROOM",
-    LOBBY_PLAYERS_UPDATED: "LOBBY_PLAYERS_UPDATED",
-    PLAYER_ANSWER_RECEIVED: "PLAYER_ANSWER_RECEIVED",
-    PLAYER_VOTE_RECEIVED: "PLAYER_VOTE_RECEIVED",
-    PLAYER_DISCONNECTED: "PLAYER_DISCONNECTED",
-    SHOW_PLAYER_POINTS: "SHOW_PLAYER_POINTS",
-    START_GAME: "START_GAME",
-    START_VOTING_PHASE: "START_VOTING_PHASE",
-    SUCCESSFULLY_JOINED_ROOM: "SUCCESSFULLY_JOINED_ROOM",
-    VOTING_RESULTS: "VOTING_RESULTS",
-    WAIT_FOR_VOTES_ON_YOUR_PROMPT: "WAIT_FOR_VOTES_ON_YOUR_PROMPT",
-  },
-};

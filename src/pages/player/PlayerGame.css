@@ -19,6 +19,12 @@
   padding-right: 20px;
 }
 
+.shake-image {
+  object-fit: contain;
+  width: 100%;
+  max-width: 400px;
+}
+
 @media (min-width: 640px) {
   .answer-input {
     margin: 20px;

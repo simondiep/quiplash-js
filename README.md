@@ -107,9 +107,15 @@ Note: The React web app needs to get built, whereas the node server does not.
 - On score screen, recap the most voted answer and prompt
 - Allow players to upload images for answers
 - Keep mobile browsers from going to sleep while playing
+- Shake phone minigame
 
 ### Not yet started
 
+- prevent image GET and instead just show the loaded (issue with inputs being in PlayerGame, even though they are not rendered. Try )
+- more intense versions of shake images to indicate power (requires tracking intensity)
+- Support picking existing pictures from phone
+- Timer system
+- Allow game to continue when players disconnect by blanking answers and not needing every vote, due to timer
 - mute button for background music
 - more suitable announcer voice that is consistent for windows and macos
 - only download sounds on host and not players

@@ -2,10 +2,17 @@ import React, { Component } from "react";
 import { withRouter } from "react-router";
 import "./HostsGame.css";
 import { getHostSocket } from "../../SocketIoConnection";
+import Countdown from "react-countdown";
 import { playBackgroundMusic, playPunchSound, speakText } from "./Sounds";
+import holdPhoneDownImage from "../../images/hold-phone-down.png";
+import holdPhoneMidImage from "../../images/hold-phone-mid.png";
+import holdPhoneUpImage from "../../images/hold-phone-up.png";
 
 class HostsGame extends Component {
-  state = { phase: "SHOW_INSTRUCTIONS" };
+  state = {
+    phase: "SHOW_INSTRUCTIONS",
+    shakeImageSrc: holdPhoneMidImage,
+  };
   // Test state
   // state = {
   //   phase: "VOTING_RESULTS_PHASE",
@@ -29,7 +36,30 @@ class HostsGame extends Component {
   //     ["simon", 1500],
   //     ["alan", 1000],
   //     ["simon 1234", 300],
-  //     ["Poop", 0],
+  //     ["bob", 0],
+  //   ],
+  //   popularAnswers: [
+  //     { answer: "aha", submitter: "simon" },
+  //     {
+  //       answer:
+  //         "I'm baby dIY bushwick pok pok gentrify, prism seitan poke ramps ennui crucifix locavore vinyl pabst pinterest. Locavore hell of migas cardigan, taiyaki shoreditch beard glossier health goth chillwave four loko paleo. Pitchfork freegan letterpress man bun helvetica taiyaki organic venmo 90's hammock. Prism XOXO master cleanse, sartorial lyft twee irony hexagon flannel roof party hammock. Actually iceland health goth tattooed. Mlkshk four dollar toast four loko messenger bag, readymade waistcoat gentrify tacos franzen iceland fixie blog paleo.",
+  //       submitter: "bob",
+  //     },
+  //   ],
+  // };
+  // state = {
+  //   phase: "SHAKE_RESULTS",
+  //   shakeImageSrc: holdPhoneUpImage,
+  //   shakeWinner: "Simon",
+  //   shakePlayers: [
+  //     { name: "Simon", shakes: 1 },
+  //     { name: "Jeff", shakes: 2 },
+  //     { name: "Ness", shakes: 3 },
+  //     { name: "Simon2", shakes: 1 },
+  //     { name: "Jeff2", shakes: 2 },
+  //     { name: "Ness2", shakes: 3 },
+  //     { name: "Jeff3", shakes: 2 },
+  //     { name: "Ness3", shakes: 3 },
   //   ],
   // };
 
@@ -98,6 +128,38 @@ class HostsGame extends Component {
       this.setState({ phase: "SHOW_PLAYER_POINTS", playersAndPoints, popularAnswers });
       speakText(`Here are the final scores.  ${playersAndPoints[0][0]} is the winner!`);
     });
+    socket.on("SHOW_SHAKE_INSTRUCTIONS", (players) => {
+      const playersObject = {};
+      for (let player of players) {
+        playersObject[player.name] = 0;
+      }
+      speakText(`Get ready to shake your phone up and down as fast as you can.`);
+      this.setState({ phase: "SHOW_SHAKE_INSTRUCTIONS", shakePlayers: playersObject });
+    });
+    socket.on("START_SHAKING", () => {
+      for (let playerName in this.state.shakePlayers) {
+        this.state.shakePlayers[playerName] = 0;
+      }
+      speakText(`Start shaking!`);
+      this.setState({ phase: "START_SHAKING", shakeTimer: Date.now() + 5000 });
+    });
+    socket.on("SHAKE_COUNT_UP", (playerName) => {
+      this.state.shakePlayers[playerName]++;
+      this.setState({ shakePlayers: this.state.shakePlayers });
+    });
+    socket.on("SHAKE_RESULTS", () => {
+      let winner;
+      let highScore = -1;
+      for (let playerName in this.state.shakePlayers) {
+        const shakes = this.state.shakePlayers[playerName];
+        if (shakes > highScore) {
+          winner = playerName;
+          highScore = shakes;
+        }
+      }
+      speakText(`The winner is ${winner}!`);
+      this.setState({ phase: "SHAKE_RESULTS", shakeWinner: winner });
+    });
     playBackgroundMusic();
   }
 
@@ -111,6 +173,10 @@ class HostsGame extends Component {
 
   onStartNewRoundClick() {
     getHostSocket().emit("HOST_START_ROUND");
+  }
+
+  onStartShakeRoundClick() {
+    getHostSocket().emit("HOST_START_SHAKE_ROUND");
   }
 
   render() {
@@ -248,10 +314,80 @@ class HostsGame extends Component {
             </button>
           </div>
         );
+      case "SHOW_SHAKE_INSTRUCTIONS":
+        // TODO theme based on shaking soda pop
+        return (
+          <div>
+            <h1>Get ready to shake your phone up and down!</h1>
+            <h2>Whoever shakes the most in five seconds, wins</h2>
+            <div className="all-shake-players">{getShakeGamePlayersComponent(this.state.shakePlayers)}</div>
+            <br />
+            <button className="submit-form-button start-new-round-button" onClick={this.onStartShakeRoundClick}>
+              Start
+            </button>
+          </div>
+        );
+      case "START_SHAKING":
+        // TODO setting the stage animation
+        // TODO say go
+        // TODO optimize network communications and rerenders
+        // TODO background music?
+        // TODO winning animation?
+        // TODO extract shake logic as a module similar to future games?
+        return (
+          <div>
+            <Countdown
+              date={this.state.shakeTimer}
+              renderer={countdownRenderer}
+              onComplete={() => getHostSocket().emit("HOST_SHAKE_DONE")}
+            />
+            <div className="all-shake-players">{getShakeGamePlayersComponent(this.state.shakePlayers)}</div>
+          </div>
+        );
+      case "SHAKE_RESULTS":
+        return (
+          <div>
+            <h1>{`Winner: ${this.state.shakeWinner}`}</h1>
+            <div className="all-shake-players">{getShakeGamePlayersComponent(this.state.shakePlayers, true)}</div>
+            <button className="submit-form-button start-new-round-button" onClick={this.onStartShakeRoundClick}>
+              Play Again
+            </button>
+            <button className="submit-form-button start-new-game-button" onClick={this.onStartNewGameNewPlayersClick}>
+              Different Game
+            </button>
+          </div>
+        );
       default:
         throw new Error("Invalid Host State ", this.state.phase);
     }
   }
+}
+
+function countdownRenderer({ seconds, completed }) {
+  if (completed) {
+    return <h1>Finished!</h1>;
+  } else {
+    return <h1>{seconds}</h1>;
+  }
+}
+
+function getShakeGamePlayersComponent(players, shouldShowScore) {
+  let connectedPlayersComponent = [];
+  for (let playerName in players) {
+    const shakes = players[playerName];
+    let shakeImgSrc = holdPhoneDownImage;
+    if (shakes % 2 === 1) {
+      shakeImgSrc = holdPhoneUpImage;
+    }
+    connectedPlayersComponent.push(
+      <div className="shake-player-avatar" key={playerName}>
+        <div>{playerName}</div>
+        {shouldShowScore && <div>{`Shakes: ${shakes}`}</div>}
+        <img src={shakeImgSrc} className="shake-image" />
+      </div>,
+    );
+  }
+  return connectedPlayersComponent;
 }
 
 function getSpokenAnswer(answer) {

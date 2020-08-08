@@ -1,3 +1,13 @@
+.all-shake-players {
+  display: flex;
+  justify-content: space-evenly;
+}
+
+.shake-player-avatar {
+  display: flex;
+  flex-direction: column;
+}
+
 .answers {
   display: flex;
   justify-content: center;
@@ -120,7 +130,7 @@
   margin-top: 20px;
   font-size: 24px;
   padding: 0;
-  width: 220px;
+  width: 290px;
 }
 
 .submit-form-button:hover {
