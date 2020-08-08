@@ -7,6 +7,9 @@ import { playBackgroundMusic, playPunchSound, speakText } from "./Sounds";
 import holdPhoneDownImage from "../../images/hold-phone-down.png";
 import holdPhoneMidImage from "../../images/hold-phone-mid.png";
 import holdPhoneUpImage from "../../images/hold-phone-up.png";
+import chargingPunchImage from "../../images/starting-punch.png";
+import completedPunchImage from "../../images/completed-punch.png";
+import completedStrongPunchImage from "../../images/completed-powerful-punch.png";
 
 class HostsGame extends Component {
   state = {
@@ -48,9 +51,9 @@ class HostsGame extends Component {
   //   ],
   // };
   // state = {
-  //   phase: "SHAKE_RESULTS",
+  //   phase: "SHOW_SHAKE_RESULTS",
   //   shakeImageSrc: holdPhoneUpImage,
-  //   shakeWinner: "Simon",
+  //   gameWinner: "Simon",
   //   shakePlayers: [
   //     { name: "Simon", shakes: 1 },
   //     { name: "Jeff", shakes: 2 },
@@ -137,13 +140,13 @@ class HostsGame extends Component {
       this.setState({ phase: "SHOW_SHAKE_INSTRUCTIONS", shakePlayers: playersObject });
     });
     socket.on("START_SHAKING", () => {
-      this.setState({ phase: "SHAKE_COUNTDOWN", shakeCountdownTimer: Date.now() + 3000 });
+      this.setState({ phase: "SHAKE_COUNTDOWN", getReadyCountdownTimer: Date.now() + 3000 });
     });
     socket.on("SHAKE_COUNT_UP", (playerName) => {
       this.state.shakePlayers[playerName]++;
       this.setState({ shakePlayers: this.state.shakePlayers });
     });
-    socket.on("SHAKE_RESULTS", () => {
+    socket.on("SHOW_SHAKE_RESULTS", () => {
       let winner;
       let highScore = -1;
       for (let playerName in this.state.shakePlayers) {
@@ -155,9 +158,53 @@ class HostsGame extends Component {
       }
       speakText(`The winner is ${winner}!`);
       this.setState({
-        phase: "SHAKE_RESULTS",
-        shakeWinner: winner,
-        shakePlayersResults: Object.assign({}, this.state.shakePlayers),
+        phase: "SHOW_SHAKE_RESULTS",
+        gameWinner: winner,
+        gamePlayersResults: Object.assign({}, this.state.shakePlayers),
+      });
+    });
+
+    socket.on("SHOW_PUNCH_INSTRUCTIONS", (players) => {
+      const playersObject = {};
+      for (let player of players) {
+        playersObject[player.name] = { punchAccel: 0, state: "STARTING_PUNCH" };
+      }
+      speakText(`Grip your phone and get ready to punch as hard as you can.`);
+      this.setState({ phase: "SHOW_PUNCH_INSTRUCTIONS", punchPlayers: playersObject });
+    });
+    socket.on("START_PUNCHING", () => {
+      this.setState({ phase: "PUNCH_COUNTDOWN", getReadyCountdownTimer: Date.now() + 3000 });
+    });
+    socket.on("STARTING_PUNCH", (playerName, punchAccel) => {
+      if (punchAccel > this.state.punchPlayers[playerName].punchAccel) {
+        this.state.punchPlayers[playerName].punchAccel = punchAccel;
+      }
+      if (punchAccel >= 5) {
+        this.state.punchPlayers[playerName].state = "STARTING_STRONG_PUNCH";
+      } else {
+        this.state.punchPlayers[playerName].state = "STARTING_PUNCH";
+      }
+      this.setState({ punchPlayers: this.state.punchPlayers });
+    });
+    socket.on("STOPPED_PUNCH", (playerName) => {
+      this.state.punchPlayers[playerName].state = "STOPPED_PUNCH";
+      this.setState({ punchPlayers: this.state.punchPlayers });
+    });
+    socket.on("SHOW_PUNCH_RESULTS", () => {
+      let winner;
+      let highScore = -1;
+      for (let playerName in this.state.punchPlayers) {
+        const punchAccel = this.state.punchPlayers[playerName].punchAccel;
+        if (punchAccel > highScore) {
+          winner = playerName;
+          highScore = punchAccel;
+        }
+      }
+      speakText(`The winner is ${winner}!`);
+      this.setState({
+        phase: "SHOW_PUNCH_RESULTS",
+        gameWinner: winner,
+        gamePlayersResults: JSON.parse(JSON.stringify(this.state.punchPlayers)),
       });
     });
     playBackgroundMusic();
@@ -173,6 +220,10 @@ class HostsGame extends Component {
 
   onStartNewRoundClick() {
     getHostSocket().emit("HOST_START_ROUND");
+  }
+
+  onStartPunchRoundClick() {
+    getHostSocket().emit("HOST_START_PUNCH_ROUND");
   }
 
   onStartShakeRoundClick() {
@@ -331,14 +382,18 @@ class HostsGame extends Component {
         return (
           <div>
             <Countdown
-              date={this.state.shakeCountdownTimer}
+              date={this.state.getReadyCountdownTimer}
               renderer={({ seconds }) => <h1>{`Starting in ${seconds}`}</h1>}
               onComplete={() => {
                 for (let playerName in this.state.shakePlayers) {
                   this.state.shakePlayers[playerName] = 0;
                 }
                 speakText(`Start shaking!`);
-                this.setState({ phase: "START_SHAKING", shakeTimer: Date.now() + 5000 });
+                this.setState({
+                  phase: "START_SHAKING",
+                  roundCountdownTimer: Date.now() + 5000,
+                  shakePlayers: this.state.shakePlayers,
+                });
               }}
             />
             <div className="all-shake-players">{getShakeGamePlayersComponent(this.state.shakePlayers)}</div>
@@ -351,21 +406,80 @@ class HostsGame extends Component {
         return (
           <div>
             <Countdown
-              date={this.state.shakeTimer}
+              date={this.state.roundCountdownTimer}
               renderer={countdownRenderer}
               onComplete={() => getHostSocket().emit("HOST_SHAKE_DONE")}
             />
             <div className="all-shake-players">{getShakeGamePlayersComponent(this.state.shakePlayers)}</div>
           </div>
         );
-      case "SHAKE_RESULTS":
+      case "SHOW_SHAKE_RESULTS":
         return (
           <div>
-            <h1>{`Winner - ${this.state.shakeWinner}`}</h1>
+            <h1>{`Winner - ${this.state.gameWinner}`}</h1>
             <div className="all-shake-players">
-              {getShakeGamePlayersComponent(this.state.shakePlayers, true, this.state.shakePlayersResults)}
+              {getShakeGamePlayersComponent(this.state.shakePlayers, true, this.state.gamePlayersResults)}
             </div>
             <button className="submit-form-button start-new-round-button" onClick={this.onStartShakeRoundClick}>
+              Play Again
+            </button>
+            <button className="submit-form-button start-new-game-button" onClick={this.onStartNewGameNewPlayersClick}>
+              Different Game
+            </button>
+          </div>
+        );
+      case "SHOW_PUNCH_INSTRUCTIONS":
+        return (
+          <div>
+            <h1>Get ready to punch while holding your phone!</h1>
+            <h2>Whoever has the most powerful punch, wins</h2>
+            <div className="all-shake-players">{getPunchGamePlayersComponent(this.state.punchPlayers)}</div>
+            <br />
+            <button className="submit-form-button start-new-round-button" onClick={this.onStartPunchRoundClick}>
+              Start
+            </button>
+          </div>
+        );
+      case "PUNCH_COUNTDOWN":
+        return (
+          <div>
+            <Countdown
+              date={this.state.getReadyCountdownTimer}
+              renderer={({ seconds }) => <h1>{`Starting in ${seconds}`}</h1>}
+              onComplete={() => {
+                for (let playerName in this.state.punchPlayers) {
+                  this.state.punchPlayers[playerName] = { punchAccel: 0, state: "STARTING_PUNCH" };
+                }
+                speakText(`Start punching!`);
+                this.setState({
+                  phase: "START_PUNCHING",
+                  roundCountdownTimer: Date.now() + 5000,
+                  punchPlayers: this.state.punchPlayers,
+                });
+              }}
+            />
+            <div className="all-shake-players">{getPunchGamePlayersComponent(this.state.punchPlayers)}</div>
+          </div>
+        );
+      case "START_PUNCHING":
+        return (
+          <div>
+            <Countdown
+              date={this.state.roundCountdownTimer}
+              renderer={countdownRenderer}
+              onComplete={() => getHostSocket().emit("HOST_PUNCH_DONE")}
+            />
+            <div className="all-shake-players">{getPunchGamePlayersComponent(this.state.punchPlayers)}</div>
+          </div>
+        );
+      case "SHOW_PUNCH_RESULTS":
+        return (
+          <div>
+            <h1>{`Winner - ${this.state.gameWinner}`}</h1>
+            <div className="all-shake-players">
+              {getPunchGamePlayersComponent(this.state.punchPlayers, true, this.state.gamePlayersResults)}
+            </div>
+            <button className="submit-form-button start-new-round-button" onClick={this.onStartPunchRoundClick}>
               Play Again
             </button>
             <button className="submit-form-button start-new-game-button" onClick={this.onStartNewGameNewPlayersClick}>
@@ -387,6 +501,30 @@ function countdownRenderer({ seconds, completed }) {
   } else {
     return <h1>{seconds}</h1>;
   }
+}
+
+function getPunchGamePlayersComponent(players, shouldShowScore = false, finalResults = {}) {
+  let connectedPlayersComponent = [];
+  for (let playerName in players) {
+    const player = players[playerName];
+    const finalResultsPlayer = finalResults[playerName];
+    let punchImgSrc = chargingPunchImage;
+    if (player.state === "STOPPED_PUNCH") {
+      punchImgSrc = chargingPunchImage;
+    } else if (player.state === "STARTING_PUNCH") {
+      punchImgSrc = completedPunchImage;
+    } else if (player.state === "STARTING_STRONG_PUNCH") {
+      punchImgSrc = completedStrongPunchImage;
+    }
+    connectedPlayersComponent.push(
+      <div className="shake-player-avatar" key={playerName}>
+        <div>{playerName}</div>
+        {shouldShowScore && <div>{`Most powerful punch: ${finalResultsPlayer.punchAccel}`}</div>}
+        <img src={punchImgSrc} className="shake-image" />
+      </div>,
+    );
+  }
+  return connectedPlayersComponent;
 }
 
 function getShakeGamePlayersComponent(players, shouldShowScore = false, finalResults = {}) {

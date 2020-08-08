@@ -1,5 +1,6 @@
 import express from "express";
 import { initializeQuiplashHandler } from "./handlers/QuiplashHandler";
+import { initializePunchGameHandler } from "./handlers/PunchGameHandler";
 import { initializeShakeGameHandler } from "./handlers/ShakeGameHandler";
 import { createRoom } from "./state/PlayersInRooms";
 
@@ -29,6 +30,7 @@ app.post("/create-new-game", function (req, res, next) {
 });
 
 initializeQuiplashHandler(io);
+initializePunchGameHandler(io);
 initializeShakeGameHandler(io);
 
 // start the app

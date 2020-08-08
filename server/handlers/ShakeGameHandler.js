@@ -7,10 +7,13 @@ export function initializeShakeGameHandler(io) {
       io.in(socket.roomCode).emit(WS_EVENT.OUTGOING.START_SHAKING);
     });
     socket.on(WS_EVENT.INCOMING.HOST_SHAKE_DONE, () => {
-      io.in(socket.roomCode).emit(WS_EVENT.OUTGOING.SHAKE_RESULTS);
+      io.in(socket.roomCode).emit(WS_EVENT.OUTGOING.SHOW_SHAKE_RESULTS);
     });
     socket.on(WS_EVENT.INCOMING.SHAKE_COUNT_UP, () => {
-      socket.to(getHostSocketIdForRoom(socket.roomCode)).emit(WS_EVENT.OUTGOING.SHAKE_COUNT_UP, socket.nickname);
+      const hostSocketId = getHostSocketIdForRoom(socket.roomCode);
+      if (hostSocketId) {
+        socket.to(hostSocketId).emit(WS_EVENT.OUTGOING.SHAKE_COUNT_UP, socket.nickname);
+      }
     });
   });
 }

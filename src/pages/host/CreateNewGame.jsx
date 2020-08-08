@@ -11,6 +11,7 @@ class CreateNewGame extends React.Component {
     this.onAllowPicturesChange = this.onAllowPicturesChange.bind(this);
     this.state = {
       allowPictureUploads: false,
+      playPunchGame: false,
       playShakeGame: false,
     };
     clearSockets();
@@ -41,7 +42,7 @@ class CreateNewGame extends React.Component {
 
   render() {
     return (
-      <div>
+      <div className="new-game-form">
         <h1>Quiplash-JS</h1>
         <button className="submit-form-button" onClick={this.onStartGameClick}>
           Start new Quiplash Game
@@ -52,6 +53,14 @@ class CreateNewGame extends React.Component {
             Allow Picture Uploads
           </label>
         </div>
+        <button
+          className="submit-form-button"
+          onClick={() => {
+            this.setState({ playPunchGame: true }, this.onStartGameClick);
+          }}
+        >
+          Start new Punch Game
+        </button>
         <button
           className="submit-form-button"
           onClick={() => {

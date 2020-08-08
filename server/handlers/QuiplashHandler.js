@@ -38,7 +38,7 @@ export function initializeQuiplashHandler(io) {
       }
     });
     socket.on(WS_EVENT.INCOMING.HOST_STARTING_GAME, () => {
-      startNewGame(socket);
+      startNewGame(socket, io);
     });
     socket.on(WS_EVENT.INCOMING.HOST_START_ROUND, () => {
       if (hasMorePromptsForRoom(socket.roomCode)) {
@@ -133,12 +133,14 @@ export function initializeQuiplashHandler(io) {
   });
 }
 
-function startNewGame(socket) {
+function startNewGame(socket, io) {
   console.log("Host is starting game for room ", socket.roomCode);
   const players = getPlayersOfRoom(socket.roomCode);
   const roomOptions = getRoomOptions(socket.roomCode);
   if (roomOptions.playShakeGame) {
-    socket.emit(WS_EVENT.OUTGOING.SHOW_SHAKE_INSTRUCTIONS, getPlayersOfRoom(socket.roomCode));
+    io.in(socket.roomCode).emit(WS_EVENT.OUTGOING.SHOW_SHAKE_INSTRUCTIONS, getPlayersOfRoom(socket.roomCode));
+  } else if (roomOptions.playPunchGame) {
+    io.in(socket.roomCode).emit(WS_EVENT.OUTGOING.SHOW_PUNCH_INSTRUCTIONS, getPlayersOfRoom(socket.roomCode));
   } else {
     const promptsForPlayers = assignPromptsForPlayers({
       players,

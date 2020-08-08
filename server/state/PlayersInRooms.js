@@ -57,7 +57,12 @@ export function doesPlayerNameAlreadyExist(roomCode, playerName) {
 }
 
 export function getHostSocketIdForRoom(roomCode) {
-  return rooms[roomCode].hostSocketId;
+  // handle case where stale client tries to connect to a past room
+  try {
+    return rooms[roomCode].hostSocketId;
+  } catch (e) {
+    return false;
+  }
 }
 
 export function getPointsSortedHighestFirst(roomCode) {

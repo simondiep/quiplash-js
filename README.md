@@ -108,6 +108,7 @@ Note: The React web app needs to get built, whereas the node server does not.
 - Allow players to upload images for answers
 - Keep mobile browsers from going to sleep while playing
 - Shake phone minigame
+- Punch minigame
 
 ### Not yet started
 

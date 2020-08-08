@@ -5,6 +5,8 @@ import "./PlayerGame.css";
 import holdPhoneDownImage from "../../images/hold-phone-down.png";
 import holdPhoneMidImage from "../../images/hold-phone-mid.png";
 import holdPhoneUpImage from "../../images/hold-phone-up.png";
+import chargingPunchImage from "../../images/starting-punch.png";
+import completedPunchImage from "../../images/completed-punch.png";
 
 class PlayerGame extends Component {
   state = { phase: "WAITING_TO_START", answer: "" };
@@ -58,8 +60,12 @@ class PlayerGame extends Component {
       }),
     );
     socket.on("WAIT_FOR_VOTES_ON_YOUR_PROMPT", () => this.setState({ phase: "WAIT_FOR_VOTES_ON_YOUR_PROMPT" }));
+    socket.on("SHOW_PUNCH_INSTRUCTIONS", () => this.setState({ gameMode: "PUNCH" }));
+    socket.on("START_PUNCHING", () => this.setState({ phase: "START_PUNCHING", shakes: 0 }));
+    socket.on("SHOW_PUNCH_RESULTS", () => this.setState({ phase: "WAITING_FOR_NEXT_ROUND", yAccel: 0, shakes: 0 }));
+    socket.on("SHOW_SHAKE_INSTRUCTIONS", () => this.setState({ gameMode: "SHAKE" }));
     socket.on("START_SHAKING", () => this.setState({ phase: "START_SHAKING", shakes: 0 }));
-    socket.on("SHAKE_RESULTS", () => this.setState({ phase: "WAITING_FOR_NEXT_ROUND", yAccel: 0, shakes: 0 }));
+    socket.on("SHOW_SHAKE_RESULTS", () => this.setState({ phase: "WAITING_FOR_NEXT_ROUND", yAccel: 0, shakes: 0 }));
   }
 
   handleSubmitAnswerClick(e) {
@@ -186,6 +192,20 @@ class PlayerGame extends Component {
         return <h1>See the results on the host screen</h1>;
       case "WAIT_FOR_VOTES_ON_YOUR_PROMPT":
         return <h1>See others vote for your answer on the host screen</h1>;
+      case "START_PUNCHING":
+        let punchImgSrc;
+        if (this.state.xAccel > 0) {
+          punchImgSrc = completedPunchImage;
+        } else {
+          punchImgSrc = chargingPunchImage;
+        }
+        return (
+          <div>
+            <h1>Start Punching!</h1>
+            <img src={punchImgSrc} className="shake-image" />
+            <div>{`Speed: ${this.state.xAccel}`}</div>
+          </div>
+        );
       case "START_SHAKING":
         let imgSrc;
         if (this.state.yAccel > 0) {
@@ -220,11 +240,23 @@ class PlayerGame extends Component {
 
   handleMotion(event) {
     event.preventDefault();
-    if (
-      this.state.phase === "WAITING_TO_START" ||
-      this.state.phase === "START_SHAKING" ||
-      this.state.phase === "WAITING_FOR_NEXT_ROUND"
-    ) {
+    if (this.state.gameMode === "PUNCH") {
+      const currentAccel = Math.round(event.acceleration.x);
+      const previousAccel = Math.round(this.state.xAccel);
+      if (currentAccel >= 2 && previousAccel < 2) {
+        // Started punching
+        getPlayerSocket().emit("STARTING_PUNCH", previousAccel);
+      } else if (currentAccel >= 5) {
+        // Strong punch
+        getPlayerSocket().emit("STARTING_PUNCH", previousAccel);
+      } else if (currentAccel <= 0 && previousAccel > 0) {
+        // Stopped punching
+        getPlayerSocket().emit("STOPPED_PUNCH");
+      }
+      this.setState({
+        xAccel: currentAccel,
+      });
+    } else if (this.state.gameMode === "SHAKE") {
       const currentAccel = Math.round(event.acceleration.y);
       const previousYAccel = Math.round(this.state.yAccel);
       let shakes = this.state.shakes;
