@@ -111,7 +111,8 @@ Note: The React web app needs to get built, whereas the node server does not.
 
 ### Not yet started
 
-- prevent image GET and instead just show the loaded (issue with inputs being in PlayerGame, even though they are not rendered. Try )
+- prevent excess image GET calls (base64?)
+- Prevent undo text popup in iOS (issue with inputs being in PlayerGame, even though they are not rendered )
 - more intense versions of shake images to indicate power (requires tracking intensity)
 - Support picking existing pictures from phone
 - Timer system

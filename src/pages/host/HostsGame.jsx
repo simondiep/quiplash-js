@@ -137,11 +137,7 @@ class HostsGame extends Component {
       this.setState({ phase: "SHOW_SHAKE_INSTRUCTIONS", shakePlayers: playersObject });
     });
     socket.on("START_SHAKING", () => {
-      for (let playerName in this.state.shakePlayers) {
-        this.state.shakePlayers[playerName] = 0;
-      }
-      speakText(`Start shaking!`);
-      this.setState({ phase: "START_SHAKING", shakeTimer: Date.now() + 5000 });
+      this.setState({ phase: "SHAKE_COUNTDOWN", shakeCountdownTimer: Date.now() + 3000 });
     });
     socket.on("SHAKE_COUNT_UP", (playerName) => {
       this.state.shakePlayers[playerName]++;
@@ -158,7 +154,11 @@ class HostsGame extends Component {
         }
       }
       speakText(`The winner is ${winner}!`);
-      this.setState({ phase: "SHAKE_RESULTS", shakeWinner: winner });
+      this.setState({
+        phase: "SHAKE_RESULTS",
+        shakeWinner: winner,
+        shakePlayersResults: Object.assign({}, this.state.shakePlayers),
+      });
     });
     playBackgroundMusic();
   }
@@ -327,10 +327,24 @@ class HostsGame extends Component {
             </button>
           </div>
         );
+      case "SHAKE_COUNTDOWN":
+        return (
+          <div>
+            <Countdown
+              date={this.state.shakeCountdownTimer}
+              renderer={({ seconds }) => <h1>{`Starting in ${seconds}`}</h1>}
+              onComplete={() => {
+                for (let playerName in this.state.shakePlayers) {
+                  this.state.shakePlayers[playerName] = 0;
+                }
+                speakText(`Start shaking!`);
+                this.setState({ phase: "START_SHAKING", shakeTimer: Date.now() + 5000 });
+              }}
+            />
+            <div className="all-shake-players">{getShakeGamePlayersComponent(this.state.shakePlayers)}</div>
+          </div>
+        );
       case "START_SHAKING":
-        // TODO setting the stage animation
-        // TODO say go
-        // TODO optimize network communications and rerenders
         // TODO background music?
         // TODO winning animation?
         // TODO extract shake logic as a module similar to future games?
@@ -347,8 +361,10 @@ class HostsGame extends Component {
       case "SHAKE_RESULTS":
         return (
           <div>
-            <h1>{`Winner: ${this.state.shakeWinner}`}</h1>
-            <div className="all-shake-players">{getShakeGamePlayersComponent(this.state.shakePlayers, true)}</div>
+            <h1>{`Winner - ${this.state.shakeWinner}`}</h1>
+            <div className="all-shake-players">
+              {getShakeGamePlayersComponent(this.state.shakePlayers, true, this.state.shakePlayersResults)}
+            </div>
             <button className="submit-form-button start-new-round-button" onClick={this.onStartShakeRoundClick}>
               Play Again
             </button>
@@ -366,15 +382,18 @@ class HostsGame extends Component {
 function countdownRenderer({ seconds, completed }) {
   if (completed) {
     return <h1>Finished!</h1>;
+  } else if (seconds === 5) {
+    return <h1>Go!</h1>;
   } else {
     return <h1>{seconds}</h1>;
   }
 }
 
-function getShakeGamePlayersComponent(players, shouldShowScore) {
+function getShakeGamePlayersComponent(players, shouldShowScore = false, finalResults = {}) {
   let connectedPlayersComponent = [];
   for (let playerName in players) {
     const shakes = players[playerName];
+    const finalShakes = finalResults[playerName];
     let shakeImgSrc = holdPhoneDownImage;
     if (shakes % 2 === 1) {
       shakeImgSrc = holdPhoneUpImage;
@@ -382,7 +401,7 @@ function getShakeGamePlayersComponent(players, shouldShowScore) {
     connectedPlayersComponent.push(
       <div className="shake-player-avatar" key={playerName}>
         <div>{playerName}</div>
-        {shouldShowScore && <div>{`Shakes: ${shakes}`}</div>}
+        {shouldShowScore && <div>{`Shakes: ${finalShakes}`}</div>}
         <img src={shakeImgSrc} className="shake-image" />
       </div>,
     );

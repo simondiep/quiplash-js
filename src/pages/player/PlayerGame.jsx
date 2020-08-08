@@ -211,7 +211,6 @@ class PlayerGame extends Component {
             <h1>Start Shaking!</h1>
             <img src={imgSrc} className="shake-image" />
             <div>{`Speed: ${speedText}`}</div>
-            <h1>{`Number of Shakes: ${this.state.shakes}`}</h1>
           </div>
         );
       default:
@@ -221,7 +220,11 @@ class PlayerGame extends Component {
 
   handleMotion(event) {
     event.preventDefault();
-    if (this.state.phase === "WAITING_TO_START" || this.state.phase === "START_SHAKING") {
+    if (
+      this.state.phase === "WAITING_TO_START" ||
+      this.state.phase === "START_SHAKING" ||
+      this.state.phase === "WAITING_FOR_NEXT_ROUND"
+    ) {
       const currentAccel = Math.round(event.acceleration.y);
       const previousYAccel = Math.round(this.state.yAccel);
       let shakes = this.state.shakes;
