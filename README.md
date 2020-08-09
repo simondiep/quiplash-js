@@ -112,6 +112,10 @@ Note: The React web app needs to get built, whereas the node server does not.
 
 ### Not yet started
 
+- be able to switch between minigames without having to go back to lobby (allow changing room options outside of /create)
+- be able to switch between minigames and quiplash without having to go back to lobby
+- play punch sound effect when stop accelerating
+- play soda sound effect when shaking
 - prevent excess image GET calls (base64?)
 - Prevent undo text popup in iOS (issue with inputs being in PlayerGame, even though they are not rendered )
 - more intense versions of shake images to indicate power (requires tracking intensity)

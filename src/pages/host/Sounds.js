@@ -10,6 +10,14 @@ export function playPunchSound() {
   playSound("sound-punch");
 }
 
+export function playPunchHitSound() {
+  playSound("sound-punch-hit");
+}
+
+export function playShakeSound() {
+  playSound("sound-shake");
+}
+
 export function playWooYeahSound() {
   playSound("sound-woo-yeah");
 }

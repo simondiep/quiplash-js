@@ -3,7 +3,7 @@ import { withRouter } from "react-router";
 import "./HostsGame.css";
 import { getHostSocket } from "../../SocketIoConnection";
 import Countdown from "react-countdown";
-import { playBackgroundMusic, playPunchSound, speakText } from "./Sounds";
+import { playBackgroundMusic, playPunchSound, playPunchHitSound, playShakeSound, speakText } from "./Sounds";
 import holdPhoneDownImage from "../../images/hold-phone-down.png";
 import holdPhoneMidImage from "../../images/hold-phone-mid.png";
 import holdPhoneUpImage from "../../images/hold-phone-up.png";
@@ -144,6 +144,7 @@ class HostsGame extends Component {
     });
     socket.on("SHAKE_COUNT_UP", (playerName) => {
       this.state.shakePlayers[playerName]++;
+      playShakeSound();
       this.setState({ shakePlayers: this.state.shakePlayers });
     });
     socket.on("SHOW_SHAKE_RESULTS", () => {
@@ -184,6 +185,7 @@ class HostsGame extends Component {
       } else {
         this.state.punchPlayers[playerName].state = "STARTING_PUNCH";
       }
+      playPunchHitSound();
       this.setState({ punchPlayers: this.state.punchPlayers });
     });
     socket.on("STOPPED_PUNCH", (playerName) => {
@@ -420,12 +422,14 @@ class HostsGame extends Component {
             <div className="all-shake-players">
               {getShakeGamePlayersComponent(this.state.shakePlayers, true, this.state.gamePlayersResults)}
             </div>
-            <button className="submit-form-button start-new-round-button" onClick={this.onStartShakeRoundClick}>
-              Play Again
-            </button>
-            <button className="submit-form-button start-new-game-button" onClick={this.onStartNewGameNewPlayersClick}>
-              Different Game
-            </button>
+            <div className="button-bar">
+              <button className="submit-form-button start-new-round-button" onClick={this.onStartShakeRoundClick}>
+                Play Again
+              </button>
+              <button className="submit-form-button start-new-game-button" onClick={this.onStartNewGameNewPlayersClick}>
+                Play Different Game
+              </button>
+            </div>
           </div>
         );
       case "SHOW_PUNCH_INSTRUCTIONS":
@@ -479,12 +483,14 @@ class HostsGame extends Component {
             <div className="all-shake-players">
               {getPunchGamePlayersComponent(this.state.punchPlayers, true, this.state.gamePlayersResults)}
             </div>
-            <button className="submit-form-button start-new-round-button" onClick={this.onStartPunchRoundClick}>
-              Play Again
-            </button>
-            <button className="submit-form-button start-new-game-button" onClick={this.onStartNewGameNewPlayersClick}>
-              Different Game
-            </button>
+            <div className="button-bar">
+              <button className="submit-form-button start-new-round-button" onClick={this.onStartPunchRoundClick}>
+                Play Again
+              </button>
+              <button className="submit-form-button start-new-game-button" onClick={this.onStartNewGameNewPlayersClick}>
+                Play Different Game
+              </button>
+            </div>
           </div>
         );
       default:
