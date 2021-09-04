@@ -13,7 +13,8 @@ const PORT = process.env.PORT || 3001;
 const path = require("path");
 
 app.use(function (request, response, next) {
-  if (process.env.NODE_ENV === "production" && !request.secure) {
+  // Heroku terminates SSL connections at the load balancer level, so req.secure will never be true
+  if (process.env.NODE_ENV === "production" && request.headers["x-forwarded-proto"] !== "https") {
     return response.redirect("https://" + request.headers.host + request.url);
   }
 
