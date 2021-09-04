@@ -112,6 +112,10 @@ Note: The React web app needs to get built, whereas the node server does not.
 
 ### Not yet started
 
+- Multiple copies of same person joining on click of Join button
+- Timer countdown for waiting for player input, so the game doesn't hang
+- Nosleep not working on some phones
+- Accelerometer not working on some phones - is it the shake to undo typing feature?
 - be able to switch between minigames without having to go back to lobby (allow changing room options outside of /create)
 - be able to switch between minigames and quiplash without having to go back to lobby
 - play punch sound effect when stop accelerating

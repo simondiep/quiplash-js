@@ -54,16 +54,49 @@ class HostsGame extends Component {
   //   phase: "SHOW_SHAKE_RESULTS",
   //   shakeImageSrc: holdPhoneUpImage,
   //   gameWinner: "Simon",
-  //   shakePlayers: [
-  //     { name: "Simon", shakes: 1 },
-  //     { name: "Jeff", shakes: 2 },
-  //     { name: "Ness", shakes: 3 },
-  //     { name: "Simon2", shakes: 1 },
-  //     { name: "Jeff2", shakes: 2 },
-  //     { name: "Ness2", shakes: 3 },
-  //     { name: "Jeff3", shakes: 2 },
-  //     { name: "Ness3", shakes: 3 },
-  //   ],
+  //   shakePlayers: {
+  //     Simon: 1,
+  //     Ness: 2,
+  //     Paula: 3,
+  //     Jeff: 4,
+  //     Poo: 5,
+  //     Starman: 6,
+  //     RunawayFive: 7,
+  //     Pookie: 8,
+  //   },
+  //   gamePlayersResults: {
+  //     Simon: 1,
+  //     Ness: 2,
+  //     Paula: 3,
+  //     Jeff: 4,
+  //     Poo: 5,
+  //     Starman: 6,
+  //     RunawayFive: 7,
+  //     Pookie: 8,
+  //   },
+  // state = {
+  //   phase: "SHOW_PUNCH_RESULTS",
+  //   gameWinner: "Simon",
+  //   punchPlayers: {
+  //     Simon: { punchAccel: 1 },
+  //     Ness: { punchAccel: 2 },
+  //     Paula: { punchAccel: 3 },
+  //     Jeff: { punchAccel: 4 },
+  //     Poo: { punchAccel: 5 },
+  //     Starman: { punchAccel: 6 },
+  //     RunawayFive: { punchAccel: 7 },
+  //     Pookie: { punchAccel: 80 },
+  //   },
+  //   gamePlayersResults: {
+  //     Simon: { punchAccel: 1 },
+  //     Ness: { punchAccel: 2 },
+  //     Paula: { punchAccel: 3 },
+  //     Jeff: { punchAccel: 4 },
+  //     Poo: { punchAccel: 5 },
+  //     Starman: { punchAccel: 6 },
+  //     RunawayFive: { punchAccel: 7 },
+  //     Pookie: { punchAccel: 80 },
+  //   },
   // };
 
   componentDidMount() {
@@ -164,7 +197,6 @@ class HostsGame extends Component {
         gamePlayersResults: Object.assign({}, this.state.shakePlayers),
       });
     });
-
     socket.on("SHOW_PUNCH_INSTRUCTIONS", (players) => {
       const playersObject = {};
       for (let player of players) {

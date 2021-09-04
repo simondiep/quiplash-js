@@ -30,12 +30,12 @@ class PlayerGame extends Component {
     this.handleSubmitAnswerClick = this.handleSubmitAnswerClick.bind(this);
     this.handleSubmitVoteClick = this.handleSubmitVoteClick.bind(this);
     this.handleSubmitVoteClick = this.handleSubmitVoteClick.bind(this);
+    this.onAllowAccelerometerAccess = this.onAllowAccelerometerAccess.bind(this);
     this.onAnswerChange = this.onAnswerChange.bind(this);
     this.onPictureTaken = this.onPictureTaken.bind(this);
     this.handleMotion = this.handleMotion.bind(this);
     this.takePictureInputRef = React.createRef();
     this.takeSelfieInputRef = React.createRef();
-    window.addEventListener("devicemotion", this.handleMotion);
   }
 
   componentDidMount() {
@@ -60,10 +60,14 @@ class PlayerGame extends Component {
       }),
     );
     socket.on("WAIT_FOR_VOTES_ON_YOUR_PROMPT", () => this.setState({ phase: "WAIT_FOR_VOTES_ON_YOUR_PROMPT" }));
-    socket.on("SHOW_PUNCH_INSTRUCTIONS", () => this.setState({ gameMode: "PUNCH" }));
+    socket.on("SHOW_PUNCH_INSTRUCTIONS", () =>
+      this.setState({ gameMode: "PUNCH", phase: "ENABLE_ACCELEROMETER", allowedAccelerometerAccess: false }),
+    );
     socket.on("START_PUNCHING", () => this.setState({ phase: "START_PUNCHING", shakes: 0 }));
     socket.on("SHOW_PUNCH_RESULTS", () => this.setState({ phase: "WAITING_FOR_NEXT_ROUND", yAccel: 0, shakes: 0 }));
-    socket.on("SHOW_SHAKE_INSTRUCTIONS", () => this.setState({ gameMode: "SHAKE" }));
+    socket.on("SHOW_SHAKE_INSTRUCTIONS", () =>
+      this.setState({ gameMode: "SHAKE", phase: "ENABLE_ACCELEROMETER", allowedAccelerometerAccess: false }),
+    );
     socket.on("START_SHAKING", () => this.setState({ phase: "START_SHAKING", shakes: 0 }));
     socket.on("SHOW_SHAKE_RESULTS", () => this.setState({ phase: "WAITING_FOR_NEXT_ROUND", yAccel: 0, shakes: 0 }));
   }
@@ -86,6 +90,23 @@ class PlayerGame extends Component {
   handleSubmitVoteClick(answerVotedFor) {
     getPlayerSocket().emit("SUBMIT_VOTE", { prompt: this.state.prompt, answerVotedFor });
     this.setState({ phase: "WAITING_FOR_NEXT_ROUND" });
+  }
+
+  onAllowAccelerometerAccess() {
+    this.setState({ allowedAccelerometerAccess: true });
+
+    // for IOS devices
+    if (typeof DeviceMotionEvent.requestPermission === "function") {
+      DeviceMotionEvent.requestPermission()
+        .then((response) => {
+          if (response === "granted") {
+            window.addEventListener("devicemotion", this.handleMotion);
+          }
+        })
+        .catch(console.error);
+    } else {
+      window.addEventListener("devicemotion", this.handleMotion);
+    }
   }
 
   onAnswerChange(event) {
@@ -192,6 +213,21 @@ class PlayerGame extends Component {
         return <h1>See the results on the host screen</h1>;
       case "WAIT_FOR_VOTES_ON_YOUR_PROMPT":
         return <h1>See others vote for your answer on the host screen</h1>;
+      case "ENABLE_ACCELEROMETER":
+        return (
+          <div>
+            <h1>Waiting Room</h1>
+            {!this.state.allowedAccelerometerAccess && (
+              <div>
+                <h2>Allow Accelerometer Access</h2>
+                <button className="player-submit-button" onClick={this.onAllowAccelerometerAccess}>
+                  Allow
+                </button>
+              </div>
+            )}
+            {this.state.allowedAccelerometerAccess && <h2>All set, start moving!</h2>}
+          </div>
+        );
       case "START_PUNCHING":
         let punchImgSrc;
         if (this.state.xAccel > 0) {
