@@ -12,6 +12,14 @@ const io = require("socket.io")(server);
 const PORT = process.env.PORT || 3001;
 const path = require("path");
 
+app.use(function (request, response, next) {
+  if (process.env.NODE_ENV === "production" && !request.secure) {
+    return response.redirect("https://" + request.headers.host + request.url);
+  }
+
+  next();
+});
+
 app.use(express.static(path.join(__dirname, "..", "build")));
 app.use(express.json());
 app.get("/", function (req, res) {

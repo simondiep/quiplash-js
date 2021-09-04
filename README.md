@@ -109,6 +109,8 @@ Note: The React web app needs to get built, whereas the node server does not.
 - Keep mobile browsers from going to sleep while playing
 - Shake phone minigame
 - Punch minigame
+- Server redirect web app to HTTPS
+- Fix issue where shake/punch games don't end
 
 ### Not yet started
 

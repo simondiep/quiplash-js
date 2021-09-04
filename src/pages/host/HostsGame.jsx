@@ -441,6 +441,7 @@ class HostsGame extends Component {
           <div>
             <Countdown
               date={this.state.roundCountdownTimer}
+              key={this.state.roundCountdownTimer}
               renderer={countdownRenderer}
               onComplete={() => getHostSocket().emit("HOST_SHAKE_DONE")}
             />
@@ -502,6 +503,7 @@ class HostsGame extends Component {
           <div>
             <Countdown
               date={this.state.roundCountdownTimer}
+              key={this.state.roundCountdownTimer}
               renderer={countdownRenderer}
               onComplete={() => getHostSocket().emit("HOST_PUNCH_DONE")}
             />
