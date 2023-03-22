@@ -2,6 +2,9 @@
   "name": "quiplash-js",
   "version": "0.1.0",
   "private": true,
+  "engines": {
+    "node": "19.8.0"
+  },
   "dependencies": {
     "@babel/plugin-proposal-class-properties": "^7.10.1",
     "@babel/preset-env": "^7.10.2",
