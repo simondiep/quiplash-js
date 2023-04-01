@@ -22,3 +22,9 @@
 .room-code-input {
   text-transform: uppercase;
 }
+
+.player-submit-button {
+  font-size: 30px;
+  font-weight: 700;
+  color: blueviolet;
+}

@@ -4,6 +4,17 @@ import { Link } from "react-router-dom";
 import { clearSockets, initializePlayerSocketIoConnection } from "../../SocketIoConnection";
 import "./JoinGame.css";
 
+const Emoji = props => (
+  <span
+    className="emoji"
+    role="img"
+    aria-label={props.label ? props.label : ""}
+    aria-hidden={props.label ? "false" : "true"}
+  >
+    {props.symbol}
+  </span>
+)
+
 class JoinGame extends React.Component {
   constructor(props) {
     super(props);
@@ -50,7 +61,7 @@ class JoinGame extends React.Component {
           <Link to="/create">HOST</Link>
         </div>
         <form onSubmit={this.handleJoinClick}>
-          <h1>Join a Game</h1>
+          <h1><Emoji symbol="👨‍⚕️💊🧫🏥" /> Join a Game <Emoji symbol="🏃🏻‍♂️🕺🏻🛼♟️" /></h1>
           <div className="join-game-container">
             <label className="join-form-label">Room Code</label>
             <input
