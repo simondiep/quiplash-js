@@ -28,3 +28,9 @@
   font-weight: 700;
   color: blueviolet;
 }
+
+.tll_image_right {
+  position: relative;
+  left: 55vh;
+  top: -32.5vh;
+}

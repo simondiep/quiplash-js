@@ -4,7 +4,8 @@ body {
     radial-gradient(circle at 100% 0%, rgba(255, 255, 255, 0.2) 10%, transparent 20%) center center / 15px 15px,
     linear-gradient(to bottom right, #3c4bbd, #57add8);
   color: white;
-  height: 100vh; /* Fallback for browsers that do not support Custom Properties */
+  height: 100vh;
+  /* Fallback for browsers that do not support Custom Properties */
   text-align: center;
 }
 
@@ -18,6 +19,7 @@ h1 {
 h2 {
   font-size: 20px;
   margin: 0;
+  padding-bottom: 2%;
 }
 
 @media (min-width: 640px) {

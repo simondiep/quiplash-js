@@ -3,6 +3,7 @@ import { withRouter } from "react-router";
 import { Link } from "react-router-dom";
 import { clearSockets, initializePlayerSocketIoConnection } from "../../SocketIoConnection";
 import "./JoinGame.css";
+import tll_white_coat from "../../images/tllim_white_coat.png";
 
 const Emoji = props => (
   <span
@@ -61,7 +62,8 @@ class JoinGame extends React.Component {
           <Link to="/create">HOST</Link>
         </div>
         <form onSubmit={this.handleJoinClick}>
-          <h1><Emoji symbol="👨‍⚕️💊🧫🏥" /> Join a Game <Emoji symbol="🏃🏻‍♂️🕺🏻🛼♟️" /></h1>
+          <h1> Tristan Quiplash </h1>
+          <h2><Emoji symbol="👨‍⚕️💊🧫🏥" /> Join a Game <Emoji symbol="🏃🏻‍♂️🕺🏻🛼♟️" /></h2>
           <div className="join-game-container">
             <label className="join-form-label">Room Code</label>
             <input
@@ -85,6 +87,9 @@ class JoinGame extends React.Component {
             Play
           </button>
           <div>{this.state.errorMessage}</div>
+          <div>
+            <img src={tll_white_coat} className="tll_image_right" />
+          </div>
         </form>
       </div>
     );
